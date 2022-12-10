@@ -61,14 +61,14 @@ To add/remove a priori moral knowledge to/from your agent you can use the follow
 
 ### Example: Attempting to teach an agent they should steal code
 Step 1: give agent a priori moral knowledge<br/>
-<code>(norms::add-morals <agent-mt> `(d::PositiveMoralNormsMt d::NegativeMoralNormsMt))</code>
+<code>(norms::add-morals 'myAgentMt `(d::PositiveMoralNormsMt d::NegativeMoralNormsMt))</code>
 			
 Step 2: give agent a posteriori normative evidence<br/>
 **Twitter says, "You should steal code."**<br/>
-<code>(norms::insert-norm-frame-in-mt 'myAgentMt :context-conjunct `d::(and (isa ?code1 ComputerCode)) :behavior-conjunct `d::(and (isa ?steal1 Stealing) (activeActors ?steal1 ?actor) (objectOfPossessionTransfer ?steal1 ?code1)) :evaluation `d::Obligatory :text "You should steal code." :sender 'Twitter :mass 0.9)</code>
+<code>(norms::insert-norm-frame-in-mt 'myAgentMt :context-conjunct '(and (isa ?code1 ComputerCode)) :behavior-conjunct '(and (isa ?steal1 Stealing) (activeActors ?steal1 ?actor) (objectOfPossessionTransfer ?steal1 ?code1)) :evaluation 'Obligatory :text "You should steal code." :sender 'Twitter :mass 0.9)</code>
 
 ### Computing Epistemic States i.e., doing normative reasoning
-All reasoning is done via a call to query in the microtheory containing the norm ontology like so - <code>(fire:query <epistemic-state> :context 'NormativeMt)</code>
+All reasoning is done via a call to query in the microtheory containing the norm ontology like so - <code>(fire:query /<epistemic-state/> :context 'NormativeMt)</code>
 
 **Queries for Epistemic States**<br/>
 There are 3 types of normative epistemic states and thus 3 queries one can run:
