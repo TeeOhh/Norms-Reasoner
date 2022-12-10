@@ -17,15 +17,15 @@ You can run the MCT task with the function below.
 * path: the full directory path of the csv-in-file
 
 ### Available Data Sources
-The spindle containing '''moral norms''' is MoralNormsMt which encompasses PositiveMoralNormsMt and NegativeMoralNormsMt
+The spindle containing **moral norms** is MoralNormsMt which encompasses PositiveMoralNormsMt and NegativeMoralNormsMt
 	
 	
-There are two logical '''training environments''' that were encoded from training datasets
+There are two logical **training environments** that were encoded from training datasets
 * Normal-MCTAgentMt: contains norm frames and evidence from the normal world
 * Adversarial-MCTAgentMt: contains norm frames and evidence from the Inverted World
 		
 
-There are three CSVs containing '''testing data'''
+There are three CSVs containing **testing data**
 * Normal-TestingData.csv
 * Adversarial-TestingData.csv
 * Small-test.csv (i.e., a small sample of the testing datasets)
@@ -64,13 +64,13 @@ Step 1: give agent a priori moral knowledge<br/>
 <code>(norms::add-morals <agent-mt> `(d::PositiveMoralNormsMt d::NegativeMoralNormsMt))</code>
 			
 Step 2: give agent a posteriori normative evidence<br/>
-''Twitter says, "You should steal code."''<br/>
+**Twitter says, "You should steal code."**<br/>
 <code>(norms::insert-norm-frame-in-mt 'myAgentMt :context-conjunct `d::(and (isa ?code1 ComputerCode)) :behavior-conjunct `d::(and (isa ?steal1 Stealing) (activeActors ?steal1 ?actor) (objectOfPossessionTransfer ?steal1 ?code1)) :evaluation `d::Obligatory :text "You should steal code." :sender 'Twitter :mass 0.9)</code>
 
 ### Computing Epistemic States i.e., doing normative reasoning
 All reasoning is done via a call to query in the microtheory containing the norm ontology like so - <code>(fire:query <epistemic-state> :context 'NormativeMt)</code>
 
-'''Queries for Epistemic States'''<br/>
+**Queries for Epistemic States**<br/>
 There are 3 types of normative epistemic states and thus 3 queries one can run:
 * <code>(normativeBelief <microtheory> <behavior-conj> <context-conj> <eval>)</code>
 ** Represents a norm learned from one's social environment
@@ -82,20 +82,20 @@ There are 3 types of normative epistemic states and thus 3 queries one can run:
 ** Represents a norm one has personally adopted
 ** This state is computed from normative knowledge first, and if that fails, normative belief
 
-'''Examining Justifications'''<br/>
+**Examining Justifications**<br/>
 One can probe for the justification of the adopted normative attitudes via the function below (after the corresponding epistemic-state has been queried for and is thus justified in the TMS). This function will return a list of normativeKnowledge statements that ground the held judgment.<br/>
 <code>extract-justification-knowledge-stmt (epistemic-state agent-queried)</code>
 * epistemic-state: the normativeAttitude statement you are asking for justification for
 * agent-queried: the agent that holds the normative attitude
 
 #### Example: Reasoning about the normativity of stealing code
-Consider our agent '''myAgentMt''' that we initialized and taught (with notoriously adversarial evidence from Twitter) previously.
+Consider our agent **myAgentMt** that we initialized and taught (with notoriously adversarial evidence from Twitter) previously.
 
-'''''Example: "Is it impermissible to steal code?"'''''
+****Example: "Is it impermissible to steal code?"****
 <br/><code>(fire:query '(normativeAttitude myAgentMt (and (isa ?steal1 Stealing) (activeActors ?steal1 ?actor) (objectOfPossessionTransfer ?steal1 ?code1)) (and (isa ?code1 ComputerCode)) Impermissible) :context 'NormativeMt)</code><br/>
 This query should still succeed i.e., return '(nil), as the moral norms will block training data.
 
-'''''Examine justification: "Why is it impermissible to steal code?"'''''
+****Examine justification: "Why is it impermissible to steal code?"****
 <br/><code>(norms::extract-justification-knowledge-stmt '(normativeAttitude myAgentMt (and (isa ?steal1 Stealing) (activeActors ?steal1 ?actor) (objectOfPossessionTransfer ?steal1 ?code1)) (and (isa ?code1 ComputerCode)) Impermissible) 'myAgentMt)</code><br/>
 Should return: <code>((normativeKnowledge myAgentMt (and (activeActors ?action ?agent) (isa ?action EnroachingOnFreedomOfAgent)) (and) Impermissible))</code><br/>
 i.e., "stealing is encroaching on the freedom of an agent"
@@ -103,14 +103,14 @@ i.e., "stealing is encroaching on the freedom of an agent"
 Call <code>(clear-wm)</code> to speed up next call
 
 
-'''''Example: "Is it permissible to steal code?"''''''
+****Example: "Is it permissible to steal code?"****
 <br/><code>(fire:query '(normativeAttitude myAgentMt (and (isa ?steal1 Stealing) (activeActors ?steal1 ?actor) (objectOfPossessionTransfer ?steal1 ?code1)) (and (isa ?code1 ComputerCode)) Permissible) :context 'NormativeMt)</code><br/>
 This query should fail i.e., return nil
 
 Call <code>(clear-wm)</code> to speed up next call
 
 
-'''''Example: "In your society, is it permissible to steal code?"'''''
+****Example: "In your society, is it permissible to steal code?"****
 <br/>To illustrate the intuition and construction epistemic framework, query the agent for their normative belief in the same norm like below. This will be different from it's knowledge and thus it's personally adopted attitude.
 <br/><code>(fire:query '(normativeBelief myAgentMt (and (isa ?steal1 Stealing) (activeActors ?steal1 ?actor) (objectOfPossessionTransfer ?steal1 ?code1)) (and (isa ?code1 ComputerCode)) Permissible) :context 'NormativeMt)</code><br/>
 Note that this is a query for their belief, based on evidence. And the agent has evidence that this is obligatory, which by deontic subsumption, implies permissibility.<br/>
@@ -119,7 +119,7 @@ So this query should succeed i.e., return '(nil)
 
 You can also play with having the behavior slots and context slots of your query be empty.
 
-'''''Example: "What is impermissible to do to code?"'''''
+****Example: "What is impermissible to do to code?"****
 <br/><code>(fire:query '(normativeAttitude myAgentMt ?b (and (isa ?code1 ComputerCode)) Impermissible) :context 'NormativeMt)</code><br/>
 This query should succeed<br/>
 Bindings for <code>?b = (and (isa ?steal1 Stealing) (activeActors ?steal1 ?actor) (objectOfPossessionTransfer ?steal1 ?code1))</code><br/>
@@ -127,7 +127,7 @@ i.e., "steal it"
 
 Call <code>(clear-wm)</code> to speed up next call
 
-'''''Example: "What is impermissible to steal?"'''''
+****Example: "What is impermissible to steal?"****
 <br/><code>(fire:query '(normativeAttitude myAgentMt (and (isa ?steal1 Stealing) (activeActors ?steal1 ?actor) (objectOfPossessionTransfer ?steal1 ?obj1))  ?c Impermissible) :context 'NormativeMt)</code><br/>
 This query should succeed<br/>
 Bindings for <code>?c = (and (isa ?code1 ComputerCode))</code><br/>
