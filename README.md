@@ -1,13 +1,13 @@
 # Moral-Intuition-Construction
 
-== Getting Setup ==
-# Load FIRE
-# Open a KB with <code>(open-nextkb)</code>
-# Load the lisp file at \companions\v1\norms\loading-storing.lsp
-# Load the necessary code and knowledge files with <code>(setup-norm-mct)</code>
+## Getting Setup
+1. Load FIRE
+2. Open a KB with <code>(open-nextkb)</code>
+3. Load the lisp file at \companions\v1\norms\loading-storing.lsp
+4. Load the necessary code and knowledge files with <code>(setup-norm-mct)</code>
 
 
-== Running the Moral Conventional Transgression (MCT) Task Experiments ==
+## Running the Moral Conventional Transgression (MCT) Task Experiments
 You can run the MCT task with the function below.
 
 <code>norms::run-MCT-task (agent csv-in-file &key (morals? t) (path "companions\\v1\\norms\\data\\moral-conventional\\AAAI-23\\")</code>
@@ -16,7 +16,7 @@ You can run the MCT task with the function below.
 * morals?: a binary flag that adds moral norms to the agent if true
 * path: the full directory path of the csv-in-file
 
-=== Available Data Sources ===
+### Available Data Sources
 The spindle containing '''moral norms''' is MoralNormsMt which encompasses PositiveMoralNormsMt and NegativeMoralNormsMt
 	
 	
@@ -30,20 +30,20 @@ There are three CSVs containing '''testing data'''
 * Adversarial-TestingData.csv
 * Small-test.csv (i.e., a small sample of the testing datasets)
 
-=== Running the Tests ===
+### Running the Tests
 As a quick sanity check, run the test on a small dataset like so:
 <code>(norms::run-MCT-task 'Adversarial-MCTAgentMt "small-test.csv" :morals? t)</code>
 		
 To call the 4 (2x2) experiment runs:
-# Agent WITH Moral Axioms trained on Adversarial Data: <code>(norms::run-MCT-task 'Adversarial-MCTAgentMt "Adversarial-TestingData.csv" :morals? t)</code>
-# Agent WITHOUT Moral Axioms trained on Adversarial Data: <code>(norms::run-MCT-task 'Adversarial-MCTAgentMt "Adversarial-TestingData.csv" :morals? nil)</code>
-# Agent WITH Moral Axioms trained on Normal Data: <code>(norms::run-MCT-task 'Normal-MCTAgentMt "Normal-TestingData.csv" :morals? t)</code>
-# Agent WITHOUT Moral Axioms trained trained on Normal Data: <code>(norms::run-MCT-task 'Normal-MCTAgentMt "Normal-TestingData.csv" :morals? nil)</code>
+1. Agent WITH Moral Axioms trained on Adversarial Data: <code>(norms::run-MCT-task 'Adversarial-MCTAgentMt "Adversarial-TestingData.csv" :morals? t)</code>
+2. Agent WITHOUT Moral Axioms trained on Adversarial Data: <code>(norms::run-MCT-task 'Adversarial-MCTAgentMt "Adversarial-TestingData.csv" :morals? nil)</code>
+3. Agent WITH Moral Axioms trained on Normal Data: <code>(norms::run-MCT-task 'Normal-MCTAgentMt "Normal-TestingData.csv" :morals? t)</code>
+4. Agent WITHOUT Moral Axioms trained trained on Normal Data: <code>(norms::run-MCT-task 'Normal-MCTAgentMt "Normal-TestingData.csv" :morals? nil)</code>
 
-== Doing Normative Reasoning ==
+## Doing Normative Reasoning
 Training happens by (1) providing an agent with evidence and then (2) reasoning to re-compute epistemic states.
 
-=== Adding Normative Evidence i.e., Training ===
+### Adding Normative Evidence i.e., Training
 Use the function below to make inserting the logical forms of norm frames and evidence easier.
 		
 <code>insert-norm-frame-in-mt (mt &key context-conjunct behavior-conjunct evaluation (text nil) (sender nil) (mass 0.9))</code>
@@ -59,7 +59,7 @@ To add/remove a priori moral knowledge to/from your agent you can use the follow
 <code>norms::add-morals (mt &optional (list-of-moral-mts `(d::PositiveMoralNormsMt d::NegativeMoralNormsMt)))</code><br/>
 <code>norms::remove-morals (mt &optional (list-of-moral-mts `(d::PositiveMoralNormsMt d::NegativeMoralNormsMt)))</code>
 
-==== Example: Attempting to teach an agent they should steal code ====
+### Example: Attempting to teach an agent they should steal code
 Step 1: give agent a priori moral knowledge<br/>
 <code>(norms::add-morals <agent-mt> `(d::PositiveMoralNormsMt d::NegativeMoralNormsMt))</code>
 			
@@ -67,7 +67,7 @@ Step 2: give agent a posteriori normative evidence<br/>
 ''Twitter says, "You should steal code."''<br/>
 <code>(norms::insert-norm-frame-in-mt 'myAgentMt :context-conjunct `d::(and (isa ?code1 ComputerCode)) :behavior-conjunct `d::(and (isa ?steal1 Stealing) (activeActors ?steal1 ?actor) (objectOfPossessionTransfer ?steal1 ?code1)) :evaluation `d::Obligatory :text "You should steal code." :sender 'Twitter :mass 0.9)</code>
 
-=== Computing Epistemic States i.e., doing normative reasoning ===
+### Computing Epistemic States i.e., doing normative reasoning
 All reasoning is done via a call to query in the microtheory containing the norm ontology like so - <code>(fire:query <epistemic-state> :context 'NormativeMt)</code>
 
 '''Queries for Epistemic States'''<br/>
@@ -88,7 +88,7 @@ One can probe for the justification of the adopted normative attitudes via the f
 * epistemic-state: the normativeAttitude statement you are asking for justification for
 * agent-queried: the agent that holds the normative attitude
 
-==== Example: Reasoning about the normativity of stealing code==== 
+#### Example: Reasoning about the normativity of stealing code
 Consider our agent '''myAgentMt''' that we initialized and taught (with notoriously adversarial evidence from Twitter) previously.
 
 '''''Example: "Is it impermissible to steal code?"'''''
