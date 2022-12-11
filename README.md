@@ -73,14 +73,14 @@ All reasoning is done via a call to query in the microtheory containing the norm
 **Queries for Epistemic States**<br/>
 There are 3 types of normative epistemic states and thus 3 queries one can run:
 * <code>(normativeBelief microtheory behavior-conj context-conj eval)</code>
-** Represents a norm learned from one's social environment
-** This state is computed from stored evidence via Dempster's rule of combination
+*    Represents a norm learned from one's social environment
+*    This state is computed from stored evidence via Dempster's rule of combination
 * <code>(normativeKnowledge microtheory behavior-conj context-conj eval)</code>
-** Represents a norm reasoned to from one's a priori internal moral principles
-** This state is computed from moral norms via inference rules of deontic logic
+*    Represents a norm reasoned to from one's a priori internal moral principles
+*    This state is computed from moral norms via inference rules of deontic logic
 * <code>(normativeAttitude microtheory behavior-conj context-conj eval)</code>
-** Represents a norm one has personally adopted
-** This state is computed from normative knowledge first, and if that fails, normative belief
+*    Represents a norm one has personally adopted
+*    This state is computed from normative knowledge first, and if that fails, normative belief
 
 **Examining Justifications**<br/>
 One can probe for the justification of the adopted normative attitudes via the function below (after the corresponding epistemic-state has been queried for and is thus justified in the TMS). This function will return a list of normativeKnowledge statements that ground the held judgment.<br/>
