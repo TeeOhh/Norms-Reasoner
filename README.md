@@ -56,29 +56,29 @@ Use the function below to make inserting the logical forms of norm frames and ev
 * mass: the mass assigned to this new piece of evidence
 
 To add/remove a priori moral knowledge to/from your agent you can use the following functions or simply add norm frames of type "MoralNorm" to the microtheory that represents your agent's beliefs<br/>
-<code>norms::add-morals (mt &optional (list-of-moral-mts `(d::PositiveMoralNormsMt d::NegativeMoralNormsMt)))</code><br/>
-<code>norms::remove-morals (mt &optional (list-of-moral-mts `(d::PositiveMoralNormsMt d::NegativeMoralNormsMt)))</code>
+<code>norms::add-morals (mt &optional (list-of-moral-mts '(PositiveMoralNormsMt d::NegativeMoralNormsMt)))</code><br/>
+<code>norms::remove-morals (mt &optional (list-of-moral-mts '(PositiveMoralNormsMt d::NegativeMoralNormsMt)))</code>
 
 ### Example: Attempting to teach an agent they should steal code
 Step 1: give agent a priori moral knowledge<br/>
-<code>(norms::add-morals 'myAgentMt `(d::PositiveMoralNormsMt d::NegativeMoralNormsMt))</code>
+<code>(norms::add-morals 'myAgentMt '(PositiveMoralNormsMt d::NegativeMoralNormsMt))</code>
 			
 Step 2: give agent a posteriori normative evidence<br/>
 **Twitter says, "You should steal code."**<br/>
 <code>(norms::insert-norm-frame-in-mt 'myAgentMt :context-conjunct '(and (isa ?code1 ComputerCode)) :behavior-conjunct '(and (isa ?steal1 Stealing) (activeActors ?steal1 ?actor) (objectOfPossessionTransfer ?steal1 ?code1)) :evaluation 'Obligatory :text "You should steal code." :sender 'Twitter :mass 0.9)</code>
 
 ### Computing Epistemic States i.e., doing normative reasoning
-All reasoning is done via a call to query in the microtheory containing the norm ontology like so - <code>(fire:query /<epistemic-state/> :context 'NormativeMt)</code>
+All reasoning is done via a call to query in the microtheory containing the norm ontology like so - <code>(fire:query epistemic-state :context 'NormativeMt)</code>
 
 **Queries for Epistemic States**<br/>
 There are 3 types of normative epistemic states and thus 3 queries one can run:
-* <code>(normativeBelief <microtheory> <behavior-conj> <context-conj> <eval>)</code>
+* <code>(normativeBelief microtheory behavior-conj context-conj eval)</code>
 ** Represents a norm learned from one's social environment
 ** This state is computed from stored evidence via Dempster's rule of combination
-* <code>(normativeKnowledge <microtheory> <behavior-conj> <context-conj> <eval>)</code>
+* <code>(normativeKnowledge microtheory behavior-conj context-conj eval)</code>
 ** Represents a norm reasoned to from one's a priori internal moral principles
 ** This state is computed from moral norms via inference rules of deontic logic
-* <code>(normativeAttitude <microtheory> <behavior-conj> <context-conj> <eval>)</code>
+* <code>(normativeAttitude microtheory behavior-conj context-conj eval)</code>
 ** Represents a norm one has personally adopted
 ** This state is computed from normative knowledge first, and if that fails, normative belief
 
