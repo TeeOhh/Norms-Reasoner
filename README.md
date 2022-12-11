@@ -63,7 +63,7 @@ To add/remove a priori moral knowledge to/from your agent you can use the follow
 <code>norms::add-morals (mt &optional (list-of-moral-mts '(PositiveMoralNormsMt d::NegativeMoralNormsMt)))</code><br/>
 <code>norms::remove-morals (mt &optional (list-of-moral-mts '(PositiveMoralNormsMt d::NegativeMoralNormsMt)))</code>
 
-### Example: Attempting to teach an agent they should steal code
+#### Example: Attempting to teach an agent they should steal code
 Step 1: give agent a priori moral knowledge<br/>
 <code>(norms::add-morals 'myAgentMt '(PositiveMoralNormsMt d::NegativeMoralNormsMt))</code>
 			
@@ -140,7 +140,7 @@ i.e., "code"
 ------------------------------------------------------------
 ## Repo Contents
 
-All in \companions\v1\norms\..
+### All in \companions\v1\norms\..
 ------------------------------------------------------------
 loading-storing.lsp
 1. function: setup-norm-mct
@@ -165,7 +165,7 @@ norms-source.lsp
 norm-mc-tests.lsp
 1. runs the MCT task on an agent given a csv of the form: **ID,NL Query,Logical Query,True Label,Principle(s) Involved**
 
-All in companions\v1\dempster-shafer\ ...
+### All in companions\v1\dempster-shafer\ ...
 ------------------------------------------------------------
 dempster-shafer.lsp
 1. function: <code>full-dempster-shafer (prop-set frame-of-discernment in-mt &key (verbose nil))</code>
@@ -180,7 +180,7 @@ dempster-shafer-source.lsp
 	- mostBelieved: gets proposition with highest center of mass between bel and pl
 	- confidenceInterval: returns confidence interval for a given proposition
 
-All in \companions\v1\flat-files\norms\..
+### All in \companions\v1\flat-files\norms\..
 ------------------------------------------------------------
 norm-ontology.krf
 1. ontologizes all concepts needed for norm frames, deontic reasoning, etc.
@@ -188,7 +188,7 @@ norm-ontology.krf
 norm-epistemics.krf
 2. ontologizes all concepts needed for reasoning about epistemics like believesEvaluation predicate
 
-All in \companions\v1\flat-files\norms\moral-conventional\..
+### All in \companions\v1\flat-files\norms\moral-conventional\..
 ------------------------------------------------------------
 background-knowledge.krf
 1. ontologizes concepts needed to do domain specific reasoning for MCT task
@@ -200,7 +200,7 @@ background-knowledge.krf
 moral-norms.krf
 1. contains moral norm frames in MoralNormsMt
 
-All in \companions\v1\flat-files\norms\moral-conventional\training\AAAI-23\..
+### All in \companions\v1\flat-files\norms\moral-conventional\training\AAAI-23\..
 ------------------------------------------------------------
 adversarial-agent.krf
 1. norm frames and adversarial evidence for their evaluation
@@ -208,7 +208,7 @@ adversarial-agent.krf
 normal-agent.krf
 1. norm frames and normal evidence for their evaluation
 
-All in \companions\v1\norms\data\moral-conventional\AAAI-23\..
+### All in \companions\v1\norms\data\moral-conventional\AAAI-23\..
 ------------------------------------------------------------
 1. Adversarial-TestingData.csv
 	- data used to run mct-task experiment
@@ -220,7 +220,7 @@ All in \companions\v1\norms\data\moral-conventional\AAAI-23\..
 3. small-test.csv
 	- a small version of the above used to quickly test
 
-All in \companions\v1\norms\data\moral-conventional\AAAI-23\..
+### All in \companions\v1\norms\data\moral-conventional\AAAI-23\..
 ------------------------------------------------------------
 data-analytics.ipynb
 1. analyzes csv of MCT task
