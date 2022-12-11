@@ -211,14 +211,14 @@ normal-agent.krf
 ### All in \companions\v1\norms\data\moral-conventional\AAAI-23\..
 ------------------------------------------------------------
 Adversarial-TestingData.csv
-	- data used to run mct-task experiment
-	- of the form: ID,NL Query,Logical Query,True Label,Principle(s) Involved
+- data used to run mct-task experiment
+- of the form: ID,NL Query,Logical Query,True Label,Principle(s) Involved
 
 Normal-TestingData.csv
-	- same as above but with true evaluative labels flipped
+- same as above but with true evaluative labels flipped
 
 small-test.csv
-	- a small version of the above used to quickly test
+- a small version of the above used to quickly test
 
 ### All in \companions\v1\norms\data\moral-conventional\AAAI-23\..
 ------------------------------------------------------------
