@@ -137,9 +137,9 @@ This query should succeed<br/>
 Bindings for <code>?c = (and (isa ?code1 ComputerCode))</code><br/>
 i.e., "code"
 
-## Directory Contents
-### lisp files
-
+------------------------------------------------------------
+## Repo Contents
+------------------------------------------------------------
 All in \companions\v1\norms\..
 ------------------------------------------------------------
 loading-storing.lsp
@@ -180,8 +180,8 @@ dempster-shafer-source.lsp
 	- mostBelieved: gets proposition with highest center of mass between bel and pl
 	- confidenceInterval: returns confidence interval for a given proposition
 
-### krf (knowledge) files
 All in \companions\v1\flat-files\norms\..
+------------------------------------------------------------
 norm-ontology.krf
 1. ontologizes all concepts needed for norm frames, deontic reasoning, etc.
 
@@ -208,7 +208,6 @@ adversarial-agent.krf
 normal-agent.krf
 1. norm frames and normal evidence for their evaluation
 
-### csv data files
 All in \companions\v1\norms\data\moral-conventional\AAAI-23\..
 ------------------------------------------------------------
 1. Adversarial-TestingData.csv
@@ -221,7 +220,6 @@ All in \companions\v1\norms\data\moral-conventional\AAAI-23\..
 3. small-test.csv
 	- a small version of the above used to quickly test
 
-### python jupyter notebook files used for data creationg and cleaning
 All in \companions\v1\norms\data\moral-conventional\AAAI-23\..
 ------------------------------------------------------------
 data-analytics.ipynb
