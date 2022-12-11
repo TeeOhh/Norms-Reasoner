@@ -5,7 +5,7 @@
 2. FIRE reasoning engine - GET HERE
 
 ## Getting Setup
-1. Load FIRE
+1. Load FIRE with <code>CALL HERE</code>
 2. Open a KB with <code>(open-nextkb)</code>
 3. Load the lisp file at \companions\v1\norms\loading-storing.lsp
 4. Load the necessary code and knowledge files with <code>(setup-norm-mct)</code>
@@ -44,7 +44,7 @@ To call the 4 (2x2) experiment runs:
 3. Agent WITH Moral Axioms trained on Normal Data: <code>(norms::run-MCT-task 'Normal-MCTAgentMt "Normal-TestingData.csv" :morals? t)</code>
 4. Agent WITHOUT Moral Axioms trained trained on Normal Data: <code>(norms::run-MCT-task 'Normal-MCTAgentMt "Normal-TestingData.csv" :morals? nil)</code>
 
-## Doing Normative Reasoning
+## Training and Testing Your Own Norm Agent
 Training happens by (1) providing an agent with evidence and then (2) reasoning to re-compute epistemic states.
 
 ### Adding Normative Evidence i.e., Training
