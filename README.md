@@ -139,7 +139,7 @@ i.e., "code"
 
 ------------------------------------------------------------
 ## Repo Contents
-------------------------------------------------------------
+
 All in \companions\v1\norms\..
 ------------------------------------------------------------
 loading-storing.lsp
@@ -163,14 +163,14 @@ norms-source.lsp
 	- equiv-prop-prop: takes in two conjunctions sees if the two are equiv i.e., stmt-implies-stmt holds in both directions
 
 norm-mc-tests.lsp
-1. runs the MCT task on an agent given a csv of the form: ID,NL Query,Logical Query,True Label,Principle(s) Involved
+1. runs the MCT task on an agent given a csv of the form: **ID,NL Query,Logical Query,True Label,Principle(s) Involved**
 
 All in companions\v1\dempster-shafer\ ...
 ------------------------------------------------------------
 dempster-shafer.lsp
-1. function: full-dempster-shafer (prop-set frame-of-discernment in-mt &key (verbose nil))
+1. function: <code>full-dempster-shafer (prop-set frame-of-discernment in-mt &key (verbose nil))</code>
 	- returns interval [belief, plausbility] for prop-set given the frame-of-discernment and evidence in in-mt
-2. function: full-dempster-shafer-FOD (frame-of-discernment in-mt &key (verbose nil))
+2. function: <code>full-dempster-shafer-FOD (frame-of-discernment in-mt &key (verbose nil))</code>
 	- same as above but returns a hash table of intervals for every prop-set from frame-of-discernment
 	- Hash table looks like this: {(evaluation Norm511274 Obligated) : (0.9 . 1.0), (evaluation Norm511274 Optional) : (0.0 . 0.1), (evaluation Norm511274 Impermissble) : (0.0 . 0.1)}
 
@@ -227,7 +227,7 @@ data-analytics.ipynb
 	- e.g., shows how many unique action types of type "moral" and "conventional"
 
 data-creation.ipynb
-2. data manipulation and creation for running MCT task experiments
+1. data manipulation and creation for running MCT task experiments
 	- e.g., creates the adversarial dataset from the original one by flipping evaluative labels
 	- e.g., from a csv file, creates a lisp file of lisp funcalls that when executed will store each datapoint as a norm frame logical form
 	- e.g., from a csv file of training data, creates csv file of testing data with corresponding normativeAttitude queries
