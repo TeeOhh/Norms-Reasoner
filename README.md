@@ -2,8 +2,8 @@
 
 ## Dependencies
 1. Lisp environment (e.g., Allegro Common Lisp (ACL))
-2. Our reasoning engine ''FIRE'' - GET HERE
-3. Our knowledge base ''NextKB'' - Go to [https://www.qrg.northwestern.edu/nextkb/index.html], under "Downloading NextKB" get and extract the KB from the link at list item #2, "A FIRE-style KB."
+2. Our reasoning engine *FIRE* - GET HERE
+3. Our knowledge base *NextKB* - Go to [https://www.qrg.northwestern.edu/nextkb/index.html], under "Downloading NextKB" get and extract the KB from the link at list item #2, "A FIRE-style KB."
 
 ## Getting Setup
 1. Load FIRE with <code>CALL HERE</code>
