@@ -6,10 +6,11 @@
 3. Our knowledge base NextKB - Visit [HERE](https://www.qrg.northwestern.edu/nextkb/index.html). Under "Downloading NextKB" download and extract the KB from the link at list item #2, "A FIRE-style KB."
 
 ## Getting Setup
-1. Load FIRE with <code>CALL HERE</code>
-2. Open a KB with <code>(open-nextkb)</code>
-3. Load the lisp file at \companions\v1\norms\loading-storing.lsp
-4. Load the necessary code and knowledge files with <code>(setup-norm-mct)</code>
+1. Open ACL
+2. In your Lisp window, load FIRE with <code>CALL HERE</code>
+3. Open a KB with <code>(open-nextkb)</code>
+4. Load the lisp file at \companions\v1\norms\loading-storing.lsp
+5. Load the necessary code and knowledge files with <code>(setup-norm-mct)</code>
 
 
 ## Running the Moral Conventional Transgression (MCT) Task Experiments
