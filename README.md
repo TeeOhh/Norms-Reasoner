@@ -3,7 +3,7 @@
 ## Dependencies
 1. Allegro Common Lisp (ACL) - Visit [HERE](https://franz.com/downloads/clp/survey)
 2. Our reasoning engine FIRE - GET [HERE]
-3. Our knowledge base NextKB - Visit [HERE](https://www.qrg.northwestern.edu/nextkb/index.html), under "Downloading NextKB" get and extract the KB from the link at list item #2, "A FIRE-style KB."
+3. Our knowledge base NextKB - Visit [HERE](https://www.qrg.northwestern.edu/nextkb/index.html). Under "Downloading NextKB" download and extract the KB from the link at list item #2, "A FIRE-style KB."
 
 ## Getting Setup
 1. Load FIRE with <code>CALL HERE</code>
