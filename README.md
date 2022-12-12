@@ -1,9 +1,9 @@
 # Moral-Intuition-Construction
 
 ## Dependencies
-1. Allegro Common Lisp (ACL) - Visit <a href="https://franz.com/products/allegro-common-lisp/?gclid=CjwKCAiAv9ucBhBXEiwA6N8nYNunTiA-K2kDcr-DjKSaePYJWNzjQiwx2eC-Eg5c7Bod-p4DdemAxxoCLL8QAvD_BwE" target="_blank">HERE</a>
+1. Allegro Common Lisp (ACL) - Visit [HERE](https://franz.com/downloads/clp/survey)
 2. Our reasoning engine FIRE - GET [HERE]
-3. Our knowledge base NextKB - Visit <a href="https://franz.com/products/allegro-common-lisp/?gclid=CjwKCAiAv9ucBhBXEiwA6N8nYNunTiA-K2kDcr-DjKSaePYJWNzjQiwx2eC-Eg5c7Bod-p4DdemAxxoCLL8QAvD_BwE](https://www.qrg.northwestern.edu/nextkb/index.html" target="_blank">HERE</a>, under "Downloading NextKB" get and extract the KB from the link at list item #2, "A FIRE-style KB."
+3. Our knowledge base NextKB - Visit [HERE]("https://franz.com/products/allegro-common-lisp/?gclid=CjwKCAiAv9ucBhBXEiwA6N8nYNunTiA-K2kDcr-DjKSaePYJWNzjQiwx2eC-Eg5c7Bod-p4DdemAxxoCLL8QAvD_BwE"), under "Downloading NextKB" get and extract the KB from the link at list item #2, "A FIRE-style KB."
 
 ## Getting Setup
 1. Load FIRE with <code>CALL HERE</code>
