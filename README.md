@@ -182,10 +182,10 @@ dempster-shafer-source.lsp
 
 ### All in \companions\v1\flat-files\norms\..
 ------------------------------------------------------------
-norm-ontology.krf
+norm-ontology.krf<br/>
 1. ontologizes all concepts needed for norm frames, deontic reasoning, etc.
 
-norm-epistemics.krf
+norm-epistemics.krf<br/>
 2. ontologizes all concepts needed for reasoning about epistemics like believesEvaluation predicate
 
 ### All in \companions\v1\flat-files\norms\moral-conventional\..
