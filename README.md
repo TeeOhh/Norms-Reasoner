@@ -6,6 +6,7 @@
 3. Our knowledge base NextKB - Visit [HERE](https://www.qrg.northwestern.edu/nextkb/index.html). Under "Downloading NextKB" download and extract the KB:
 <br/>  3.a. From the link navigate to list item #2, "A FIRE-style KB." 
 <br/>  3.b. Click on the click in the sentence "This zip archive contains such a knowledge base."
+##<br/>HOW DOES FIRE KNOW WHERE KB IS? WHERE SHOULD THEY PUT IT?
 
 ## Getting Setup
 1. Open ACL
