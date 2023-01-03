@@ -143,7 +143,6 @@ i.e., "code"
 
 ------------------------------------------------------------
 ## Repo Contents
-------------------------------------------------------------
 loading-storing.lsp
 1. function: setup-norm-mct
 	- loads all of the necessary files for MCT experiments
@@ -167,7 +166,8 @@ norm-mc-tests.lsp
 
 ### All in ..\dempster-shafer\
 ------------------------------------------------------------
-This directory contains the code that does Dempster Shafer operations to combine evidence.
+This directory contains the code that does Dempster Shafer operations to combine evidence.<br/>
+
 dempster-shafer.lsp
 1. function: <code>full-dempster-shafer (prop-set frame-of-discernment in-mt &key (verbose nil))</code>
 	- returns interval [belief, plausbility] for prop-set given the frame-of-discernment and evidence in in-mt
@@ -183,7 +183,8 @@ dempster-shafer-source.lsp
 	
 ### All in ..\flat-files\
 ------------------------------------------------------------
-This directory contains the logical encodings of the training data (i.e., the evidence).
+This directory contains the logical encodings of the training data (i.e., the evidence).<br/>
+
 adversarial-agent.krf
 1. norm frames and adversarial evidence for their evaluation
 
@@ -192,6 +193,8 @@ normal-agent.krf
 
 ### All in ..\testing-data\
 ------------------------------------------------------------
+This directory contains the csv files that are used to run the MCT task experiments.<br/>
+
 Adversarial-TestingData.csv
 - data used to run mct-task experiment
 - of the form: ID,NL Query,Logical Query,True Label,Principle(s) Involved
