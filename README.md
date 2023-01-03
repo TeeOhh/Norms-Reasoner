@@ -4,8 +4,8 @@
 1. Allegro Common Lisp (ACL) - Visit [HERE](https://franz.com/downloads/clp/survey)
 2. Our reasoning engine FIRE - GET [HERE]
 3. Our knowledge base NextKB - Visit [HERE](https://www.qrg.northwestern.edu/nextkb/index.html). Under "Downloading NextKB" download and extract the KB:
-3.a. From the link navigate to list item #2, "A FIRE-style KB." 
-3.b. Click on the click in the sentence "This zip archive contains such a knowledge base."
+<br/>  3.a. From the link navigate to list item #2, "A FIRE-style KB." 
+<br/>  3.b. Click on the click in the sentence "This zip archive contains such a knowledge base."
 
 ## Getting Setup
 1. Open ACL
