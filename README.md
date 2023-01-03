@@ -143,8 +143,6 @@ i.e., "code"
 
 ------------------------------------------------------------
 ## Repo Contents
-
-### All in \companions\v1\norms\..
 ------------------------------------------------------------
 loading-storing.lsp
 1. function: setup-norm-mct
@@ -157,9 +155,7 @@ utils.lsp
 1. does necessary logical form encodings and transformations
 	- e.g., from variables binded to norm frame slots, it constructs the multiple norm frame logical statements for each slot
 	- e.g., conjunction surgery like from conjunction creates ist-information statements to be used with query
-2. does norm frame storing
-3. contains genls hierarchy analysis code
-	- e.g., find lowest shared genls between two concepts
+2. does norm frame storing and merging
 
 norms-source.lsp
 1. norm source fire handlers
@@ -169,8 +165,9 @@ norms-source.lsp
 norm-mc-tests.lsp
 1. runs the MCT task on an agent given a csv of the form: **ID,NL Query,Logical Query,True Label,Principle(s) Involved**
 
-### All in companions\v1\dempster-shafer\ ...
+### All in ..\dempster-shafer\
 ------------------------------------------------------------
+This directory contains the code that does Dempster Shafer operations to combine evidence.
 dempster-shafer.lsp
 1. function: <code>full-dempster-shafer (prop-set frame-of-discernment in-mt &key (verbose nil))</code>
 	- returns interval [belief, plausbility] for prop-set given the frame-of-discernment and evidence in in-mt
@@ -183,6 +180,29 @@ dempster-shafer-source.lsp
 	- believes: true for a proposition if center of belief and plausbility >= 0.9
 	- mostBelieved: gets proposition with highest center of mass between bel and pl
 	- confidenceInterval: returns confidence interval for a given proposition
+	
+### All in ..\flat-files\
+------------------------------------------------------------
+This directory contains the logical encodings of the training data (i.e., the evidence).
+adversarial-agent.krf
+1. norm frames and adversarial evidence for their evaluation
+
+normal-agent.krf
+1. norm frames and normal evidence for their evaluation
+
+### All in ..\testing-data\
+------------------------------------------------------------
+Adversarial-TestingData.csv
+- data used to run mct-task experiment
+- of the form: ID,NL Query,Logical Query,True Label,Principle(s) Involved
+
+Normal-TestingData.csv
+- same as above but with true evaluative labels flipped
+
+small-test.csv
+- a small version of the above used to quickly test
+
+## FROM HERE ON IS UNNECESSARY. GET THE KRF FILES IN THE NEXT KB BUILD.
 
 ### All in \companions\v1\flat-files\norms\..
 ------------------------------------------------------------
@@ -203,26 +223,6 @@ background-knowledge.krf
 
 moral-norms.krf
 1. contains moral norm frames in MoralNormsMt
-
-### All in \companions\v1\flat-files\norms\moral-conventional\training\AAAI-23\..
-------------------------------------------------------------
-adversarial-agent.krf
-1. norm frames and adversarial evidence for their evaluation
-
-normal-agent.krf
-1. norm frames and normal evidence for their evaluation
-
-### All in \companions\v1\norms\data\moral-conventional\AAAI-23\..
-------------------------------------------------------------
-Adversarial-TestingData.csv
-- data used to run mct-task experiment
-- of the form: ID,NL Query,Logical Query,True Label,Principle(s) Involved
-
-Normal-TestingData.csv
-- same as above but with true evaluative labels flipped
-
-small-test.csv
-- a small version of the above used to quickly test
 
 ### All in \companions\v1\norms\data\moral-conventional\AAAI-23\..
 ------------------------------------------------------------
