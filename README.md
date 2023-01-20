@@ -10,21 +10,24 @@
 
 ------------------------------------------------------------
 ## Repo Contents
-utils.lsp
-1. does necessary logical form encodings and transformations
-	- e.g., from variables binded to norm frame slots, it constructs the multiple norm frame logical statements for each slot
-	- e.g., conjunction surgery like from conjunction creates ist-information statements to be used with query
-2. does norm frame storing and merging
+Norms-Reasoner-v1000
+1. Installer for Norms Reasoner application. This will allow you to run the experiments yourself and see the models output and results. This also comes with support to browse the knowledge base by clicking on concepts within logical forms.
+
+norm-mc-tests.lsp
+1. runs the MCT task on an agent given a csv of the form: **ID,NL Query,Logical Query,True Label,Principle(s) Involved**
 
 norms-source.lsp
 1. norm source fire handlers
 	- stmt-implies-stmt: takes in two conjunctions and sees whether the 1st implies the 2nd via subsumption
 	- equiv-prop-prop: takes in two conjunctions sees if the two are equiv i.e., stmt-implies-stmt holds in both directions
 
-norm-mc-tests.lsp
-1. runs the MCT task on an agent given a csv of the form: **ID,NL Query,Logical Query,True Label,Principle(s) Involved**
+utils.lsp
+1. does necessary logical form encodings and transformations
+	- e.g., from variables binded to norm frame slots, it constructs the multiple norm frame logical statements for each slot
+	- e.g., conjunction surgery like from conjunction creates ist-information statements to be used with query
+2. does norm frame storing and merging
 
-### All in ..\dempster-shafer\
+### In ..\dempster-shafer\
 ------------------------------------------------------------
 This directory contains the code that does Dempster Shafer operations to combine evidence.<br/>
 
