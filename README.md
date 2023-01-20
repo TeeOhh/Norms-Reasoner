@@ -1,5 +1,4 @@
-# Norms Reasoner
-## Moral-Intuition-Construction
+# Norms Reasoner i.e., a model of Moral Intuition andConstruction
 
 ## Getting Setup
 1. Download installer
