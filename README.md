@@ -11,7 +11,7 @@ We have created an executable that makes re-running our experiments quite easy. 
 2. Select your parameters and press the "Run MCT Task" button. Give it some time, it will redirect to a new webpage that displays the results and the experiment log (we suggest keeping your number of probes low b/c reasoning takes a while).
 3. Important! Before closing the application, press the red "Shutdown" button in the top right hand corner. This ensures the knowledgebase gets closed correctly.
 
-![Norms Reasoner Interface](Images/NormsReasoner-interface.png)
+![Norms Reasoner Interface](./Images/NormsReasoner-interface.png)
 
 
 ------------------------------------------------------------
