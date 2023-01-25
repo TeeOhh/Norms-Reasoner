@@ -1,17 +1,21 @@
-# Norms Reasoner i.e., a model of Moral Intuition and Construction
+# Norms Reasoner - A Model of Moral Intuition and Construction
 
 ## Getting Setup
-1. Download installer
-2. *Do installer things*
+We have created an executable that makes re-running our experiments quite easy. You can get the executable by downloading and running our installer.
+1. Download installer [here](http://example.com)
+2. Run the installer and go through the Setup Wizard (the default file locations in the "Custom Setup" step should work just fine)
 
 ## Running the Experiments
-*Tell them how to use the interface*
+1. Open the Norms Reasoner application once you've ran the installer (the application will open in a web browser)
+<br/>1.a The main page is where you can choose parameters and run the experiments. It should look like the picture below.
+2. Select your parameters and press the "Run MCT Task" button. Give it some time, it will redirect to a new webpage that displays the results and the experiment log (we suggest keeping your number of probes low b/c reasoning takes a while).
+3. Important! Before closing the application, press the red "Shutdown" button in the top right hand corner. This ensures the knowledgebase gets closed correctly.
+
+![Norms Reasoner Interface](Images/NormsReasoner-interface.png)
+
 
 ------------------------------------------------------------
 ## Repo Contents
-Norms-Reasoner-v1000
-1. Installer for Norms Reasoner application. This will allow you to run the experiments yourself and see the models output and results. This also comes with support to browse the knowledge base by clicking on concepts within logical forms.
-
 norm-mc-tests.lsp
 1. runs the MCT task on an agent given a csv of the form: **ID,NL Query,Logical Query,True Label,Principle(s) Involved**
 
@@ -47,9 +51,9 @@ dempster-shafer-source.lsp
 ------------------------------------------------------------
 This directory contains the csv files that are used to run the MCT task experiments.<br/>
 
-Adversarial-TestingData.csv
+Normal-TestingData.csv
 - data used to run mct-task experiment
 - of the form: ID,NL Query,Logical Query,True Label,Principle(s) Involved
 
-Normal-TestingData.csv
+Adversarial-TestingData.csv
 - same as above but with true evaluative labels flipped
