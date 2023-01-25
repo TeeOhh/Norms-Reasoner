@@ -1,5 +1,5 @@
 # Norms Reasoner - A Model of Moral Intuition and Construction
-Our AAAI-23 Paper detailing this work can be found <a href="https://qrg.northwestern.edu/papers/Files/QRG_Dist_Files/QRG_2023/MitigatingAdversarialNormTrainingWithMoralAxioms.pdf" target="_blank">here</a>.
+*Our AAAI-23 paper detailing this work can be found <a href="https://qrg.northwestern.edu/papers/Files/QRG_Dist_Files/QRG_2023/MitigatingAdversarialNormTrainingWithMoralAxioms.pdf" target="_blank">here</a>.*
 
 ## Getting Setup
 We have created an executable that makes re-running our experiments quite easy. You can get the executable by downloading and running our installer.
