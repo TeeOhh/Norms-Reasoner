@@ -1,17 +1,21 @@
-# Norms Reasoner - A Model of Moral Intuition and Construction
+# Norms Reasoner
+## Running our computational model of Moral Intuition and Construction
+*Our AAAI-23 paper detailing this work can be found <a href="https://qrg.northwestern.edu/papers/Files/QRG_Dist_Files/QRG_2023/MitigatingAdversarialNormTrainingWithMoralAxioms.pdf" target="_blank">here</a>.*
+<br>Authors: Taylor Olson and Ken Forbus
+<br>*Shoutout to Madeline Usher for help with creating the executable and installer*
 
 ## Getting Setup
 We have created an executable that makes re-running our experiments quite easy. You can get the executable by downloading and running our installer.
-1. Download installer [here](http://example.com)
+1. Download installer <a href="https://www.qrg.northwestern.edu/software/normsreasoner/index.html" target="_blank">here</a>.
 2. Run the installer and go through the Setup Wizard (the default file locations in the "Custom Setup" step should work just fine)
 
 ## Running the Experiments
 1. Open the Norms Reasoner application once you've ran the installer (the application will open in a web browser)
-<br/>1.a The main page is where you can choose parameters and run the experiments. It should look like the picture below.
+<br/>1.a. The main page is where you can choose parameters and run the experiments. It should look like the picture below.
 2. Select your parameters and press the "Run MCT Task" button. Give it some time, it will redirect to a new webpage that displays the results and the experiment log (we suggest keeping your number of probes low b/c reasoning takes a while).
-3. Important! Before closing the application, press the red "Shutdown" button in the top right hand corner. This ensures the knowledgebase gets closed correctly.
+3. Important! Before closing the application, press the red "Shutdown" button in the top right hand corner. This ensures the knowledge base gets closed correctly.
 
-![Norms Reasoner Interface](Images/NormsReasoner-interface.png)
+![Norms Reasoner Interface](./Images/NormsReasoner-interface.PNG)
 
 
 ------------------------------------------------------------
