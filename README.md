@@ -1,4 +1,5 @@
-# Norms Reasoner - A Model of Moral Intuition and Construction
+# Norms Reasoner
+## Running our computational model of Moral Intuition and Construction
 *Our AAAI-23 paper detailing this work can be found <a href="https://qrg.northwestern.edu/papers/Files/QRG_Dist_Files/QRG_2023/MitigatingAdversarialNormTrainingWithMoralAxioms.pdf" target="_blank">here</a>.*
 <br>Authors: Taylor Olson and Ken Forbus
 <br>*Shoutout to Madeline Usher for help with creating the executable and installer*
