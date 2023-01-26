@@ -5,7 +5,7 @@
 
 ## Getting Setup
 We have created an executable that makes re-running our experiments quite easy. You can get the executable by downloading and running our installer.
-1. Download installer <a href="http://example.com" target="_blank">here</a>.
+1. Download installer <a href="https://www.qrg.northwestern.edu/software/normsreasoner/index.html" target="_blank">here</a>.
 2. Run the installer and go through the Setup Wizard (the default file locations in the "Custom Setup" step should work just fine)
 
 ## Running the Experiments
