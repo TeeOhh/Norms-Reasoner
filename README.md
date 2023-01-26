@@ -5,7 +5,7 @@
 <br>*Shoutout to Madeline Usher for help with creating the executable and installer*
 
 ## Getting Setup
-We have created an executable that makes running our experiment as easy as clicking a button. You can get the executable by downloading and running our installer.
+We have created an executable (Windows only) that makes running our experiment as easy as clicking a button. You can get the executable by downloading and running our installer.
 1. Download installer <a href="https://www.qrg.northwestern.edu/software/normsreasoner/index.html" target="_blank">here</a>.
 2. Run the installer and go through the Setup Wizard (the default file locations in the "Custom Setup" step should work just fine)
 
