@@ -5,7 +5,7 @@
 <br>*Shoutout to Madeline Usher for help with creating the executable and installer*
 
 ## Getting Setup
-We have created an executable that makes re-running our experiments quite easy. You can get the executable by downloading and running our installer.
+We have created an executable that makes running our experiment as easy as clicking a button. You can get the executable by downloading and running our installer.
 1. Download installer <a href="https://www.qrg.northwestern.edu/software/normsreasoner/index.html" target="_blank">here</a>.
 2. Run the installer and go through the Setup Wizard (the default file locations in the "Custom Setup" step should work just fine)
 
@@ -25,7 +25,8 @@ norm-mc-tests.lsp
 
 norms-source.lsp
 1. norm source fire handlers
-	- stmt-implies-stmt: takes in two conjunctions and sees whether the 1st implies the 2nd via subsumption
+	Two predicates of interest:
+	- stmt-implies-stmt: takes in two conjunctions and sees whether the 1st entails the 2nd
 	- equiv-prop-prop: takes in two conjunctions sees if the two are equiv i.e., stmt-implies-stmt holds in both directions
 
 utils.lsp
