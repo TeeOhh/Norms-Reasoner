@@ -35,6 +35,26 @@ utils.lsp
 	- e.g., conjunction surgery like from conjunction creates ist-information statements to be used with query
 2. does norm frame storing and merging
 
+
+### In ..\knowledge\
+------------------------------------------------------------
+This directory contains all facts and rules used for reasoning. For a complementary set of knowledge and rules, explore our full knowledge base [here](https://www.qrg.northwestern.edu/nextkb/index.html).
+
+background-knowledge.krf
+Contains facts and rules specialized for reasoning about the scenarios in the MCT datasets.
+
+MCT-InvertedWorld.krf and MCT-NormalWorld.krf
+Contains training data (in the form of norm frames) from the MCT dataset for both the Inverted and Normal world.
+
+moral-norms
+Contains the moral norm frames (axioms) of our agent.
+
+norm-epistemics
+Formalism for reasoning about norms, normative beliefs, and other normative concepts.
+
+norm-ontology
+Formalism for norm frames and other normative concepts.
+
 ### In ..\dempster-shafer\
 ------------------------------------------------------------
 This directory contains the code that does Dempster Shafer operations to combine evidence.<br/>
