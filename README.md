@@ -40,20 +40,15 @@ utils.lsp
 ------------------------------------------------------------
 This directory contains all facts and rules used for reasoning. For a complementary set of knowledge and rules, explore our full knowledge base [here](https://www.qrg.northwestern.edu/nextkb/index.html).
 
-background-knowledge.krf
-Contains facts and rules specialized for reasoning about the scenarios in the MCT datasets.
+background-knowledge.krf: Contains facts and rules specialized for reasoning about the scenarios in the MCT datasets.
 
-MCT-InvertedWorld.krf and MCT-NormalWorld.krf
-Contains training data (in the form of norm frames) from the MCT dataset for both the Inverted and Normal world.
+MCT-InvertedWorld.krf and MCT-NormalWorld.krf: Contain training data (in the form of norm frames) from the MCT dataset for both the Inverted and Normal world.
 
-moral-norms
-Contains the moral norm frames (axioms) of our agent.
+moral-norms.krf: Contains the moral norm frames (axioms) of our agent.
 
-norm-epistemics
-Formalism for reasoning about norms, normative beliefs, and other normative concepts.
+norm-epistemics.krf: Formalism for reasoning about norms, normative beliefs, and other normative concepts.
 
-norm-ontology
-Formalism for norm frames and other normative concepts.
+norm-ontology.krf: Formalism for norm frames and other normative concepts.
 
 ### In ..\dempster-shafer\
 ------------------------------------------------------------
