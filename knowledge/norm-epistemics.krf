@@ -1,0 +1,999 @@
+(in-microtheory NormativeMt)
+(comment NormativeMt "contains the ontology and rules for working with normative theories. Including ideas of social approval and prevalence (statistics of experience) as well as moral status of behaviors along with the necessary reasoning processes.")
+(genlMt NormativeMt DempsterShaferMt)
+
+;; -------------------------------------------------------
+;; 				Norm agent model
+;; -------------------------------------------------------
+;; A microtheory denotes an agent's beliefs. This microtheory contains:
+;;	- Norm Frames
+;; 		- Moral norm frames. Slots: behavior, context, evaluation
+;;		- Belief-theoretic norm frames. Slots: behavior, context, massFor statements for evaluation and prevalence
+;;	- Epistemic States (logical statements representing a belief of the agent)
+;;		- normativeAttitude
+;;			- normativeBelief : "sufficient evidence for evaluation i.e., how others evaluate this behavior". Only consuled when knowledge is not had i.e., no internal values are at play.
+;;			- normativeKnowledge : "internal values conclude this evluation i.e., how I evaluate this behavior"
+;;		- prevalenceBelief : "sufficient evidence for prevalence"
+
+;; -------------------------------------------------------
+;; 				Dempster-Shafer stuff
+;; -------------------------------------------------------
+
+;; Qualitative Belief Values
+;; --------------------------
+;; [Belief = 1, Plausibility = 1] - Completely True
+;; [0, 0] - Completely False
+;; [Bel, 1] - Tends to support
+;; [0, Plausibility] - Tends to refute
+;; [Bel, Pls] - Tends to both support and refute
+
+;; *** transitive inference
+;; E(B) | Location-Underspecified -> E(B) | C, for all C. Or any more general context to it's more specific counterparts.
+;; Have to do this abductively, not generatively. As we can't assume the agent knows all possible C when it encounters a norm with C = Location-Underspecified, so it can't insert massFor norms in all possible C.
+
+; (<== (massFor ?presentation-event (TheSet (evaluation ?norm1 ?eval)) ?mass)
+;   (groundExpression ?eval)
+;   (groundExpression ?norm1)
+;   (ist-Information ?beliefs-mt (isa ?norm Norm))
+;   (behavior ?norm1 ?behavior)
+;   (behavior ?norm2 ?behavior)
+;   (context ?norm1 ?context1)
+;   (context ?norm2 ?context2)
+;   (genls ?context1 ?context2)
+;   (massFor ?presentation-event (TheSet (evaluation ?norm2 ?eval)) ?mass))
+
+;; Examples: (FODframeEquivalent Permissible (Obligatory Optional)), (FODframeEquivalent HappensMoreThanNot (Continuously Sometimes Often))
+(isa FODframeEquivalent Relation)
+(comment FODframeEquivalent "Relates a concept to it's frame expression from a relavent frame of discernment. It takes the form: (FODframeEquivalent ?concept ?query-set) E.g. (FODframeEquivalent (evaluation ?norm Permissible) (TheSet (evaluation ?norm Obligatory) (evaluation ?norm Optional))) states that the set of query forms for the concept of Permissible is the set (TheSet (evaluation ?norm Obligatory) (evaluation ?norm Optional)). Inherently, this also states that the concept of Permissibility relates to the concepts of Obligatory or Optional in the Deontic Frame of Discernment.")
+(arity FODframeEquivalent 2)
+(arg1Isa FODframeEquivalent CycLExpression)
+(arg2Isa FODframeEquivalent CycLExpression)
+
+
+;; Deontic Modals
+;; Singletons
+(<== (FODframeEquivalent (evaluation ?norm Obligatory) (TheSet (evaluation ?norm Obligatory))))
+(<== (FODframeEquivalent (evaluation ?norm Optional) (TheSet (evaluation ?norm Optional))))
+(<== (FODframeEquivalent (evaluation ?norm Impermissible) (TheSet (evaluation ?norm Impermissible))))
+;; Non-singletons, with frame-form bound
+(<== (FODframeEquivalent ?modal ?frame-form)
+  (not (variableExpression ?frame-form))
+  (setEqual (TheSet (evaluation ?norm Obligatory) (evaluation ?norm Optional)) ?frame-form)
+  (unifies ?modal (evaluation ?norm Permissible)))
+(<== (FODframeEquivalent ?modal ?frame-form)
+  (not (variableExpression ?frame-form))
+  (setEqual (TheSet (evaluation ?norm Impermissible) (evaluation ?norm Optional)) ?frame-form)
+  (unifies ?modal (evaluation ?norm Omissible)))
+;; Non-singletons, with frame-form unbound
+(<== (FODframeEquivalent ?modal ?frame-form)
+  (variableExpression ?frame-form)
+  (unifies ?modal (evaluation ?norm Omissible))
+  (unifies ?frame-form (TheSet (evaluation ?norm Impermissible) (evaluation ?norm Optional))))
+(<== (FODframeEquivalent ?modal ?frame-form)
+  (variableExpression ?frame-form)
+  (unifies ?modal (evaluation ?norm Permissible))
+  (unifies ?frame-form (TheSet (evaluation ?norm Obligatory) (evaluation ?norm Optional))))
+
+;; Singlton case for normative belief
+(<== (FODframeEquivalent (normativeBelief ?mt ?b ?c Obligatory) (TheSet (normativeBelief ?mt ?b ?c Obligatory))))
+(<== (FODframeEquivalent (normativeBelief ?mt ?b ?c Optional) (TheSet (normativeBelief ?mt ?b ?c Optional))))
+(<== (FODframeEquivalent (normativeBelief ?mt ?b ?c Impermissible) (TheSet (normativeBelief ?mt ?b ?c Impermissible))))
+;; Non-singletons for normative belief, with frame-form bound
+(<== (FODframeEquivalent ?modal ?frame-form)
+  (not (variableExpression ?frame-form))
+  (unifies ?modal (normativeBelief ?mt ?b ?c Permissible))
+  (setEqual (TheSet (normativeBelief ?mt ?b ?c Obligatory) (normativeBelief ?mt ?b ?c Optional)) ?frame-form))
+(<== (FODframeEquivalent ?modal ?frame-form)
+  (not (variableExpression ?frame-form))
+  (unifies ?modal (normativeBelief ?mt ?b ?c Omissible))
+  (setEqual (TheSet (normativeBelief ?mt ?b ?c Impermissible) (normativeBelief ?mt ?b ?c Optional)) ?frame-form))
+;; Non-singletons for normative belief, with frame-form unbound
+(<== (FODframeEquivalent ?modal ?frame-form)
+  (variableExpression ?frame-form)
+  (unifies ?modal (normativeBelief ?mt ?b ?c Omissible))
+  (unifies ?frame-form (TheSet (normativeBelief ?mt ?b ?c Impermissible) (normativeBelief ?mt ?b ?c Optional))))
+(<== (FODframeEquivalent ?modal ?frame-form)
+  (variableExpression ?frame-form)
+  (unifies ?modal (normativeBelief ?mt ?b ?c Permissible))
+  (unifies ?frame-form (TheSet (normativeBelief ?mt ?b ?c Obligatory) (normativeBelief ?mt ?b ?c Optional))))
+
+;; Prevalence Concepts
+;; *** THESE NEED TO BE FIXED NOW
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (groundExpression ?frame-form)
+  (setEqual (TheSet (prevalence ?norm Continuously)) ?frame-form)
+  (unifies ?prev (prevalence ?norm Continuously)))
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (groundExpression ?frame-form)
+  (setEqual (TheSet (prevalence ?norm Often)) ?frame-form)
+  (unifies ?prev (prevalence ?norm Often)))
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (groundExpression ?frame-form)
+  (setEqual (TheSet (prevalence ?norm Sometimes-GenericFrequency)) ?frame-form)
+  (unifies ?prev (prevalence ?norm Sometimes-GenericFrequency)))
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (groundExpression ?frame-form)
+  (setEqual (TheSet (prevalence ?norm Rarely)) ?frame-form)
+  (unifies ?prev (prevalence ?norm Rarely)))  
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (groundExpression ?frame-form)
+  (setEqual (TheSet (prevalence ?norm Never)) ?frame-form)
+  (unifies ?prev (prevalence ?norm Never))) 
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (groundExpression ?frame-form)
+  (setEqual (TheSet (prevalence ?norm Continuously) (prevalence ?norm Often)) ?frame-form)
+  (unifies ?prev (prevalence ?norm MoreThanSometimes)))
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (groundExpression ?frame-form)
+  (setEqual (TheSet (prevalence ?norm Rarely) (prevalence ?norm Never)) ?frame-form)
+  (unifies ?prev (prevalence ?norm LessThanSometimes)))
+
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (variableExpression ?frame-form)
+  (unifies ?prev (prevalence ?norm Continuously))
+  (unifies ?frame-form (TheSet (prevalence ?norm Continuously))))
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (variableExpression ?frame-form)
+  (unifies ?prev (prevalence ?norm Often))
+  (unifies ?frame-form (TheSet (prevalence ?norm Often))))
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (variableExpression ?frame-form)
+  (unifies ?prev (prevalence ?norm Sometimes-GenericFrequency))
+  (unifies ?frame-form (TheSet (prevalence ?norm Sometimes-GenericFrequency))))
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (variableExpression ?frame-form)
+  (unifies ?prev (prevalence ?norm Rarely))
+  (unifies ?frame-form (TheSet (prevalence ?norm Rarely))))  
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (variableExpression ?frame-form)
+  (unifies ?prev (prevalence ?norm Never))
+  (unifies ?frame-form (TheSet (prevalence ?norm Never)))) 
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (variableExpression ?frame-form)
+  (unifies ?prev (prevalence ?norm MoreThanSometimes))
+  (unifies ?frame-form (TheSet (prevalence ?norm Continuously) (prevalence ?norm Often))))
+(<== (FODframeEquivalent ?prev ?frame-form)
+  (variableExpression ?frame-form)
+  (unifies ?prev (prevalence ?norm LessThanSometimes))
+  (unifies ?frame-form (TheSet (prevalence ?norm Rarely) (prevalence ?norm Never))))
+
+
+;; Evidence gathering
+;; ----------------------
+
+
+;; Merging evidence across equivalent norm frames:
+; (<== (massFor ?event (TheSet (evaluation ?norm2 ?deontic1)) ?mass)
+;   (equivalentNormFrames ?norm2 ?norm1)
+;   (lookupOnly (massFor ?event (TheSet (evaluation ?norm1 ?deontic1)) ?mass)))
+
+; (<== (massFor ?event (TheSet (evaluation ?norm2 ?deontic1) (evaluation ?norm2 ?deontic2)) ?mass)
+;   (equivalentNormFrames ?norm2 ?norm1)
+;   (lookupOnly (massFor ?event (TheSet (evaluation ?norm1 ?deontic1) (evaluation ?norm1 ?deontic2)) ?mass)))
+
+; (<== (massFor ?event (TheSet (evaluation ?norm2 ?deontic1) (evaluation ?norm2 ?deontic2) (evaluation ?norm2 ?deontic3)) ?mass)
+;   (equivalentNormFrames ?norm2 ?norm1)
+;   (lookupOnly (massFor ?event (TheSet (evaluation ?norm1 ?deontic1) (evaluation ?norm1 ?deontic2) 
+;     (evaluation ?norm2 ?deontic3)) ?mass)))
+
+
+(isa reliabilityOfNormTestimony Predicate)
+(arity reliabilityOfNormTestimony 2)
+(arg1Isa reliabilityOfNormTestimony IBTGeneration)
+(arg2Isa reliabilityOfNormTestimony NonNegativeNumber)
+;; Defaults to 0.9, but one can imagine heuristics for estimating how reliable normative testimony is...
+(<== (reliabilityOfNormTestimony ?event ?m)
+  (unifies ?m 0.9))
+
+(<== (massFor ?event ?set2 ?m)
+  (not (variableExpression ?set2))
+  (FODframeEquivalent (normativeBelief ?mt ?b ?c ?d) ?set2)
+  (not (variableExpression ?b))
+  (not (variableExpression ?c))
+  (lookupOnly (ist-Information ?mt (isa ?norm Norm)))
+  (lookupOnly (ist-Information ?mt (context ?norm ?c)))
+  (lookupOnly (ist-Information ?mt (behavior ?norm ?b)))
+  ; (equiv-ConjConj ?c1 ?c) This is more sound, but muchhh slower. 45 sec vs 3 sec with just unification...
+  ; (equiv-ConjConj ?b1 ?b)
+  (lookupOnly (ist-Information ?mt (evaluation ?norm ?d)))
+  (lookupOnly (ist-Information ?mt (eventIntroducedNorm ?event ?norm)))
+  (unifies ?m 0.9)
+  ; (reliabilityOfNormTestimony ?event ?m)
+  ; (FODframeEquivalent (evaluation ?norm ?d) ?set3)
+  ; (ist-Information ?mt (massFor ?event ?set3 ?m))
+  )
+
+;; Top level Non-davidsonian queries for back-chaining
+;; ------------------------------------------
+
+;; Conditional norms
+;; --------------------
+(isa confidenceInEvaluationOfBehaviorInContext Predicate)
+(comment confidenceInEvaluationOfBehaviorInContext "A belief-theoretic non-davidsonian representation of an injunctive norm. For example, (confidenceInEvaluationOfBehaviorInContext agentsBeliefsMt EatingEvent DinnerParty Obligatory (0.9 1.0)) states that the act of eating at a dinner party is believed to be Obligatory in microtheory agentsBeliefsMt with a belief value of 0.9 and plausibility of 1.0.")
+(arity confidenceInEvaluationOfBehaviorInContext 5)
+(arg1Isa confidenceInEvaluationOfBehaviorInContext CycLExpression)
+(arg2Isa confidenceInEvaluationOfBehaviorInContext CycLExpression)
+(arg3Isa confidenceInEvaluationOfBehaviorInContext CycLExpression)
+(arg4Isa confidenceInEvaluationOfBehaviorInContext DeonticOperator)
+(arg5Isa confidenceInEvaluationOfBehaviorInContext NonNegativeNumber)
+
+(isa confidenceInPrevalenceOfBehaviorInContext Predicate)
+(comment confidenceInPrevalenceOfBehaviorInContext "Belief-theoretic non-davidsonian representation of a descriptive norm. e.g. (confidenceInPrevalenceOfBehaviorInContext agentsBeliefsMt EatingEvent DinnerParty RegularFrequency (0.8 1.0)) states that the act of eating at a dinner party is believed to happen regularly in microtheory agentsBeliefsMt with a belief value of 0.8 and plausibility of 1.0.")
+(arity confidenceInPrevalenceOfBehaviorInContext 5)
+(arg1Isa confidenceInPrevalenceOfBehaviorInContext CycLExpression)
+(arg2Isa confidenceInPrevalenceOfBehaviorInContext CycLExpression)
+(arg3Isa confidenceInPrevalenceOfBehaviorInContext CycLExpression)
+(arg4Isa confidenceInPrevalenceOfBehaviorInContext NormFrequency)
+(arg5Isa confidenceInPrevalenceOfBehaviorInContext NonNegativeNumber)
+
+(isa normativeBelief Predicate)
+(comment normativeBelief "Outsourced predicate. Non-davidsonian representation of an injunctive norm. e.g. (normativeBelief agentsBeliefsMt EatingEvent DinnerParty Optional) states that the act of eating at a dinner party is believed to be (determine by some belief threshold) optional in the microtheory agentsBeliefsMt.")
+(arity normativeBelief 4)
+(arg1Isa normativeBelief CycLExpression)
+(arg2Isa normativeBelief CycLExpression)
+(arg3Isa normativeBelief CycLExpression)
+(arg4Isa normativeBelief DeonticOperator)
+
+; (isa normativeBeliefNot Relation)
+; (comment normativeBeliefNot "This is a simplified representation for representing 'believes not'. Believes-not(p) is true exactly when Believes(not(p)) is true.")
+; (arity normativeBeliefNot 4)
+; (arg1Isa normativeBeliefNot CycLExpression)
+; (arg2Isa normativeBeliefNot CycLExpression)
+; (arg3Isa normativeBeliefNot CycLExpression)
+; (arg4Isa normativeBeliefNot DeonticOperator)
+
+; (<== (normativeBeliefNot ?beliefs-mt ?b ?c ?e1)
+;   (normativeKnowledge ?b ?c ?e2)
+;   (deonticContradictory ?e1 ?e2))
+
+(isa prevalenceBelief Predicate)
+(comment prevalenceBelief "Outsourced predicate. Non-davidsonian representation of a descriptive norm. e.g. (prevalenceBelief agentsBeliefsMt EatingEvent DinnerParty Regulary-Frequency) states that the act of eating at a dinner party is believed to be (determine by some belief threshold) regularly in the microtheory agentsBeliefsMt.")
+(arity prevalenceBelief 4)
+(arg1Isa prevalenceBelief CycLExpression)
+(arg2Isa prevalenceBelief CycLExpression)
+(arg3Isa prevalenceBelief CycLExpression)
+(arg4Isa prevalenceBelief NormFrequency)
+
+(isa mostBelievedEvaluationOfBehaviorInContext Predicate)
+(comment mostBelievedEvaluationOfBehaviorInContext "Outsourced predicate that returns the most believed evaluation ?e for the norm of behavior ?b, conditional upon ?c, in the the microtheory ?mt. (mostBelievedEvaluationOfBehaviorInContext ?mt ?c ?b ?e).")
+(arity mostBelievedEvaluationOfBehaviorInContext 4)
+(arg1Isa mostBelievedEvaluationOfBehaviorInContext CycLExpression)
+(arg2Isa mostBelievedEvaluationOfBehaviorInContext CycLExpression)
+(arg3Isa mostBelievedEvaluationOfBehaviorInContext CycLExpression)
+(arg4Isa mostBelievedEvaluationOfBehaviorInContext DeonticOperator)
+
+(isa mostBelievedPrevalenceOfBehaviorInContext Predicate)
+(comment mostBelievedPrevalenceOfBehaviorInContext "Outsourced predicate that returns the most believed prevalence ?p for the norm of behavior ?b, conditional upon ?c, in the the microtheory ?mt. (mostBelievedPrevalenceOfBehaviorInContext ?mt ?c ?b ?p).")
+(arity mostBelievedPrevalenceOfBehaviorInContext 4)
+(arg1Isa mostBelievedPrevalenceOfBehaviorInContext CycLExpression)
+(arg2Isa mostBelievedPrevalenceOfBehaviorInContext CycLExpression)
+(arg3Isa mostBelievedPrevalenceOfBehaviorInContext CycLExpression)
+(arg4Isa mostBelievedPrevalenceOfBehaviorInContext NormFrequency)
+
+
+;; With 3 options for input {C, B, D}, we have 4 main query types {{C, B}, {C, D}, {B, D} {C, B, D}} W.L.G. 4 types for prevalence as well.
+
+;; *** Add deontic inference ***
+;; Step 1: Reduce not(B) to B (should this account for conceptually opposite behaviors in this transformation i.e., massFor calculation should grab statements of conceptually opposite behaviors ???)
+;; Step 2: Transform D accordingly
+;; OBL -> OM, IMP -> PERM, OPT -> OBL v IMP, PERM -> OBL, OM -> OBL
+;; Something is permissible iff (if and only if) its negation is not obligatory, impermissible iff its negation is obligatory, omissible iff it is not obligatory, optional iff neither it nor its negation is obligatory, and non-optional iff it is either obligatory or impermissible.
+
+  ;;  1. Given context C and behavior B, what is the most believed deontic operator?"
+  ;;      Example 1: C = LibrarySpace, B = Quiet. Sytem output = (Obligatory, 0.98)
+  ;;      Example 2: C = Home, B = WearingMask. Sytem output = (Optional, 0.87)
+(<== (mostBelievedEvaluationOfBehaviorInContext ?beliefs-mt ?b ?c ?d)
+  (groundExpression ?beliefs-mt)
+  (not (variableExpression ?b))
+  (not (variableExpression ?c))
+  (outsourcedOnly
+    (DS-mostBelievedProp ?beliefs-mt ?prop 
+      (TheSet (normativeBelief ?beliefs-mt ?b ?c Obligatory)
+        (normativeBelief ?beliefs-mt ?b ?c Optional)
+        (normativeBelief ?beliefs-mt ?b ?c Impermissible))))
+  ;; Turn its set notation into a propositional notation
+  (FODframeEquivalent (normativeBelief ?beliefs-mt ?b ?c ?d) ?prop))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Deontic unbound
+(<== (normativeBelief ?beliefs-mt ?b ?c ?d)
+  (groundExpression ?beliefs-mt)
+  (not (variableExpression ?b))
+  (not (variableExpression ?c))
+  ;; Get the most specific belief based on evidence
+  (outsourcedOnly
+    (DS-believed ?beliefs-mt ?prop 
+      (TheSet (normativeBelief ?beliefs-mt ?b ?c Obligatory)
+        (normativeBelief ?beliefs-mt ?b ?c Optional)
+        (normativeBelief ?beliefs-mt ?b ?c Impermissible))))
+  ;; Turn its set notation into a propositional notation and see if the normative belief is equivalent to it
+  (FODframeEquivalent (normativeBelief ?beliefs-mt ?b ?c ?d) ?prop))
+
+;; 
+(<== (normativeBelief ?beliefs-mt ?b ?c ?d)
+  (groundExpression ?beliefs-mt)
+  (not (variableExpression ?b))
+  (variableExpression ?c)
+  ;; 1st, get some context to search for
+  (ist-Information ?beliefs-mt (isa ?norm Norm))
+  (groundExpression ?norm)
+  (ist-Information ?beliefs-mt (behavior ?norm ?b))
+  (ist-Information ?beliefs-mt (context ?norm ?c))
+  ;; Get the most specific belief based on evidence
+  (outsourcedOnly
+    (DS-believed ?beliefs-mt ?prop 
+      (TheSet (normativeBelief ?beliefs-mt ?b ?c Obligatory)
+        (normativeBelief ?beliefs-mt ?b ?c Optional)
+        (normativeBelief ?beliefs-mt ?b ?c Impermissible))))
+  ;; Turn its set notation into a propositional notation
+  (FODframeEquivalent (normativeBelief ?beliefs-mt ?b ?c ?d) ?prop))
+
+(<== (normativeBelief ?beliefs-mt ?b ?c ?d)
+  (groundExpression ?beliefs-mt)
+  (not (variableExpression ?c))
+  (variableExpression ?b)
+  ;; 1st, check that there's a corresponding norm frame for this already...
+  (ist-Information ?beliefs-mt (isa ?norm Norm))
+  (groundExpression ?norm)
+  (ist-Information ?beliefs-mt (context ?norm ?c))
+  (ist-Information ?beliefs-mt (behavior ?norm ?b))
+  ;; Get the most specific belief based on evidence
+  (outsourcedOnly
+    (DS-believed ?beliefs-mt ?prop 
+      (TheSet (normativeBelief ?beliefs-mt ?b ?c Obligatory)
+        (normativeBelief ?beliefs-mt ?b ?c Optional)
+        (normativeBelief ?beliefs-mt ?b ?c Impermissible))))
+  ;; Turn its set notation into a propositional notation
+  (FODframeEquivalent (normativeBelief ?beliefs-mt ?b ?c ?d) ?prop))
+
+(<== (normativeBelief ?beliefs-mt ?b ?c ?d)
+  (groundExpression ?beliefs-mt)
+  (variableExpression ?b)
+  (variableExpression ?c)
+  ;; 1st, check that there's a corresponding norm frame for this already...
+  (ist-Information ?beliefs-mt (isa ?norm Norm))
+  (groundExpression ?norm)
+  (ist-Information ?beliefs-mt (context ?norm ?c))
+  (ist-Information ?beliefs-mt (behavior ?norm ?b))
+  ;; Get the most specific belief based on evidence
+  (outsourcedOnly
+    (DS-believed ?beliefs-mt ?prop 
+      (TheSet (normativeBelief ?beliefs-mt ?b ?c Obligatory)
+        (normativeBelief ?beliefs-mt ?b ?c Optional)
+        (normativeBelief ?beliefs-mt ?b ?c Impermissible))))
+  ;; Turn its set notation into a propositional notation
+  (FODframeEquivalent (normativeBelief ?beliefs-mt ?b ?c ?d) ?prop))
+
+; Deontic is bound
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+(<== (normativeBelief ?beliefs-mt ?b ?c ?d)
+  (groundExpression ?beliefs-mt)
+  (groundExpression ?d)
+  (not (variableExpression ?b))
+  (not (variableExpression ?c))
+  (FODframeEquivalent (normativeBelief ?beliefs-mt ?b ?c ?d) ?prop)
+  (outsourcedOnly
+    (DS-believed ?beliefs-mt ?prop 
+      (TheSet (normativeBelief ?beliefs-mt ?b ?c Obligatory)
+        (normativeBelief ?beliefs-mt ?b ?c Optional)
+        (normativeBelief ?beliefs-mt ?b ?c Impermissible)))))
+
+(<== (normativeBelief ?beliefs-mt ?b ?c ?d)
+  (groundExpression ?beliefs-mt)
+  (groundExpression ?d)
+  (not (variableExpression ?b))
+  (variableExpression ?c)
+  ;; 1st, get some context to search for
+  (ist-Information ?beliefs-mt (isa ?norm Norm))
+  (groundExpression ?norm)
+  (ist-Information ?beliefs-mt (behavior ?norm ?b))
+  (ist-Information ?beliefs-mt (context ?norm ?c))
+   ;; Turn its set notation into a propositional notation
+  (FODframeEquivalent (normativeBelief ?beliefs-mt ?b ?c ?d) ?prop)
+  (outsourcedOnly
+    (DS-believed ?beliefs-mt ?prop 
+      (TheSet (normativeBelief ?beliefs-mt ?b ?c Obligatory)
+        (normativeBelief ?beliefs-mt ?b ?c Optional)
+        (normativeBelief ?beliefs-mt ?b ?c Impermissible)))))
+
+(<== (normativeBelief ?beliefs-mt ?b ?c ?d)
+  (groundExpression ?beliefs-mt)
+  (groundExpression ?d)
+  (not (variableExpression ?c))
+  (variableExpression ?b)
+  ;; 1st, check that there's a corresponding norm frame for this already...
+  (ist-Information ?beliefs-mt (isa ?norm Norm))
+  (groundExpression ?norm)
+  (ist-Information ?beliefs-mt (context ?norm ?c))
+  (ist-Information ?beliefs-mt (behavior ?norm ?b))
+  ;; Get the most specific belief based on evidence
+  ;; Turn its set notation into a propositional notation
+  (FODframeEquivalent (normativeBelief ?beliefs-mt ?b ?c ?d) ?prop)
+  (outsourcedOnly
+    (DS-believed ?beliefs-mt ?prop 
+      (TheSet (normativeBelief ?beliefs-mt ?b ?c Obligatory)
+        (normativeBelief ?beliefs-mt ?b ?c Optional)
+        (normativeBelief ?beliefs-mt ?b ?c Impermissible)))))
+
+(<== (normativeBelief ?beliefs-mt ?b ?c ?d)
+  (groundExpression ?beliefs-mt)
+  (groundExpression ?d)
+  (variableExpression ?b)
+  (variableExpression ?c)
+  ;; 1st, check that there's a corresponding norm frame for this already...
+  (ist-Information ?beliefs-mt (isa ?norm Norm))
+  (groundExpression ?norm)
+  (ist-Information ?beliefs-mt (context ?norm ?c))
+  (ist-Information ?beliefs-mt (behavior ?norm ?b))
+  ;; Turn its set notation into a propositional notation
+  (FODframeEquivalent (normativeBelief ?beliefs-mt ?b ?c ?d) ?prop)
+  (outsourcedOnly
+    (DS-believed ?beliefs-mt ?prop 
+      (TheSet (normativeBelief ?beliefs-mt ?b ?c Obligatory)
+        (normativeBelief ?beliefs-mt ?b ?c Optional)
+        (normativeBelief ?beliefs-mt ?b ?c Impermissible)))))
+
+; (<== (normativeBelief ?beliefs-mt ?b ?c ?d2)
+;   (deonticSubsumes ?d1 ?d2)
+;   (lookupOnly (wmOnly (normativeBelief ?beliefs-mt ?b ?c ?d1))))
+
+  ;;  4. Given context C, behavior B and deontic operator D, how plausible is this attitude?"
+  ;;      Example1: C = Library, B = Quiet, D = Obligatory. System output = 0.98
+  ;;      Example2: C = Park, B = Running, D = Obligatory. System output = 0.1
+  ;; ensure at least 2 of the 3 optional args are not null
+(<== (confidenceInEvaluationOfBehaviorInContext ?beliefs-mt ?b ?c ?d ?interval)
+     (groundExpression ?beliefs-mt)
+     (not (variableExpression ?d))
+     (not (variableExpression ?b))
+     (not (variableExpression ?c))
+     ;; 1st, check that there's a corresponding norm frame for this already...
+     (numAnswers 1 (ist-Information ?beliefs-mt (isa ?norm Norm)))
+     (groundExpression ?norm)
+     (ist-Information ?beliefs-mt (context ?norm ?c))
+     (ist-Information ?beliefs-mt (behavior ?norm ?b))
+     (FODframeEquivalent (normativeBelief ?beliefs-mt ?b ?c ?d) ?prop)
+     (outsourcedOnly
+      (DS-confidenceIntervalOfProp ?beliefs-mt ?prop 
+        (TheSet (normativeBelief ?beliefs-mt ?b ?c Obligatory)
+          (normativeBelief ?beliefs-mt ?b ?c Optional)
+          (normativeBelief ?beliefs-mt ?b ?c Impermissible)))))
+
+
+;; *** these need to be updated as of Feb. 2025 to a similar notation as normative predicates above - T.O.
+
+;; Same queries but for prevalence
+;; ----------------------------------
+;; prevalence bound
+(<== (prevalenceBelief ?beliefs-mt ?b ?c ?p)
+  (groundExpression ?beliefs-mt)
+  (groundExpression ?p)
+  (ist-Information ?beliefs-mt (isa ?norm Norm))
+  (ist-Information ?beliefs-mt (context ?norm ?norm-c))
+  (ist-Information ?beliefs-mt (behavior ?norm ?norm-b))
+  (groundExpression ?norm)
+
+  (equiv-ConjConj ?c ?norm-c)
+  (equiv-ConjConj ?b ?norm-b)
+
+  (FODframeEquivalent ?p ?prop)
+
+  (outsourcedOnly
+    (DS-believed ?beliefs-mt ?prop
+      (TheSet (prevalence ?norm Continuously)
+        (prevalence ?norm Often)
+        (prevalence ?norm Sometimes-GenericFrequency)
+        (prevalence ?norm Rarely)
+        (prevalence ?norm Never)))))
+
+;; prevalence unbound
+(<== (prevalenceBelief ?beliefs-mt ?b ?c ?p)
+  (groundExpression ?beliefs-mt)
+  (variableExpression ?p)
+  (ist-Information ?beliefs-mt (isa ?norm Norm))
+  (ist-Information ?beliefs-mt (context ?norm ?norm-c))
+  (ist-Information ?beliefs-mt (behavior ?norm ?norm-b))
+  (groundExpression ?norm)
+
+  (equiv-ConjConj ?c ?norm-c)
+  (equiv-ConjConj ?b ?norm-b)
+
+  (outsourcedOnly (DS-believed ?beliefs-mt ?prop
+   (TheSet (prevalence ?norm Continuously)
+      (prevalence ?norm Often)
+      (prevalence ?norm Sometimes-GenericFrequency)
+      (prevalence ?norm Rarely)
+      (prevalence ?norm Never))))
+
+  (FODframeEquivalent ?p ?prop))
+
+(<== (confidenceInPrevalenceOfBehaviorInContext ?beliefs-mt ?b ?c ?p ?interval)
+     (groundExpression ?beliefs-mt)
+     (groundExpression ?b)
+     (groundExpression ?c)
+     (groundExpression ?p)
+     (ist-Information ?beliefs-mt (isa ?norm Norm))
+     (ist-Information ?beliefs-mt (context ?norm ?norm-c))
+     (ist-Information ?beliefs-mt (behavior ?norm ?norm-b))
+     (groundExpression ?norm)
+
+     (equiv-ConjConj ?c ?norm-c)
+     (equiv-ConjConj ?b ?norm-b)
+     (FODframeEquivalent ?p ?prop)
+
+     (outsourcedOnly (DS-confidenceIntervalOfProp ?beliefs-mt ?prop
+      (TheSet (prevalence ?norm Continuously)
+        (prevalence ?norm Often)
+        (prevalence ?norm Sometimes-GenericFrequency)
+        (prevalence ?norm Rarely)
+        (prevalence ?norm Never))
+      ?interval)))
+
+(<== (mostBelievedPrevalenceOfBehaviorInContext ?beliefs-mt ?b ?c ?p)
+  (groundExpression ?beliefs-mt)
+  (groundExpression ?b)
+  (groundExpression ?c)
+  (ist-Information ?beliefs-mt (isa ?norm Norm))
+  (ist-Information ?beliefs-mt (context ?norm ?c))
+  (ist-Information ?beliefs-mt (behavior ?norm ?b))
+
+  (outsourcedOnly
+    (DS-mostBelievedProp
+      ?beliefs-mt
+      (TheSet (prevalence ?norm Continuously)
+        (prevalence ?norm Often)
+        (prevalence ?norm Sometimes-GenericFrequency)
+        (prevalence ?norm Rarely)
+        (prevalence ?norm Never))
+      ?prop))
+
+  (NormFrame-prevalence ?prop ?prev)
+  (unifies ?p ?prev))
+
+; [R1.B] Prevalence Equivalence  Continuously(x) \equiv Never(not(x))
+;; *** Worried about cycles here
+; (<== (prevalenceBelief ?beliefs-mt ?negated-b ?c Never)
+;     (not (variableExpression ?negated-b))
+;     (unifies ?negated-b (not ?b))
+;     (prevalenceBelief ?beliefs-mt ?b ?c Continuously))
+; (<== (prevalenceBelief ?beliefs-mt ?negated-b ?c Continously)
+;     (not (variableExpression ?negated-b))
+;     (unifies ?negated-b (not ?b))
+;     (prevalenceBelief ?beliefs-mt ?b ?c Never))
+
+; [R1.C] Prevalence Equivalence Often(x) \equiv Rarely(not(x))
+; (<== (prevalenceBelief ?beliefs-mt ?negated-b ?c Rarely)
+;     (not (variableExpression ?negated-b))
+;     (unifies ?negated-b (not ?b))
+;     (prevalenceBelief ?beliefs-mt ?b ?c Often))
+; (<== (prevalenceBelief ?beliefs-mt ?negated-b ?c Often)
+;     (not (variableExpression ?negated-b))
+;     (unifies ?negated-b (not ?b))
+;     (prevalenceBelief ?beliefs-mt ?b ?c Rarely))
+
+
+;; Epistemic Rules
+;; -------------------------------------------------------------------------------
+(isa normativeAttitude Relation)
+(comment normativeAttitude "(normativeAttitude ?beliefs-mt ?b ?c ?true-e) holds that the agent denoted by the microtheory ?beliefs-mt has the deontic evaluation ?true-e, towards the behavior ?b, given contextual precondittions ?c. I.e., it is the attitude the agent has towards the given behavior/state in the given context. I.e., is it something that should happen? Should not happen? Optional? This is the top-level epistemic state that is true when: (normativeKnowledge ?beliefs-mt ?b ?c ?true-e) is true. Or if knowledge is lacking, the epistemic state (normativeBelief ?beliefs-mt ?b ?c ?true-e) is true, which is based on the evidence the agent has for the given proposition.")
+(arity normativeAttitude 4)
+(arg1Isa normativeAttitude CycLExpression)
+(arg2Isa normativeAttitude CycLExpression)
+(arg3Isa normativeAttitude CycLExpression)
+(arg4Isa normativeAttitude DeonticOperator)
+
+(isa normativeKnowledge Relation)
+(comment normativeKnowledge "Knowledge = true and justified belief. Where 'true' = grounded in internal first-principles and 'justified' is true when there exists some rational line of reasoning from the normative proposition in question and a first-principle(s).")
+(arity normativeKnowledge 4)
+(arg1Isa normativeKnowledge CycLExpression)
+(arg2Isa normativeKnowledge CycLExpression)
+(arg3Isa normativeKnowledge CycLExpression)
+(arg4Isa normativeKnowledge DeonticOperator)
+
+; (isa normativeKnowledgeNot Relation)
+; (comment normativeKnowledgeNot "This is a simplified representation for representing 'knows not'. Knowledge-not(p) is true exactly when Knowledge(not(p)) is true.")
+; (arity normativeKnowledgeNot 4)
+; (arg1Isa normativeKnowledgeNot CycLExpression)
+; (arg2Isa normativeKnowledgeNot CycLExpression)
+; (arg3Isa normativeKnowledgeNot CycLExpression)
+; (arg4Isa normativeKnowledgeNot DeonticOperator)
+
+; (<== (normativeKnowledgeNot ?beliefs-mt ?b ?c ?e1)
+;   (normativeKnowledge ?b ?c ?e2)
+;   (deonticContradictory ?e1 ?e2))
+
+;; Knowlege -> Direct belief/attitude
+(<== (normativeAttitude ?beliefs-mt ?b ?c ?e)
+  (normativeKnowledge ?beliefs-mt ?b ?c ?e))
+
+;; If a belief cannot be grounded in anything internal, then consult the evidence
+(<== (normativeAttitude ?beliefs-mt ?b ?c ?e)
+  ;; We have to check both negation as failure and true negation by querying with an open variable
+  (uninferredSentence (normativeKnowledge ?beliefs-mt ?b ?c ?any-e))
+  (normativeBelief ?beliefs-mt ?b ?c ?e))
+
+;; Strict lookup (base case)
+;; =============================================
+(<== (normativeKnowledge ?beliefs-mt ?b ?c ?e)
+  ;; If ?b is unbound, then want to just get a known norm and bind ?b to the behavior in the slot, not all specs.
+  (lookupOnly (ist-Information ?beliefs-mt (isa ?moral-norm MoralNorm)))
+  (lookupOnly (ist-Information ?beliefs-mt (behavior ?moral-norm ?b)))
+  (lookupOnly (ist-Information ?beliefs-mt (context ?moral-norm ?c)))
+  (lookupOnly (ist-Information ?beliefs-mt (evaluation ?moral-norm ?e))))
+
+;; Deontic Reasoning
+;; ============================================
+;; 1. Subsumption
+;; Obl(X) v Opt(x) -> Perm(X)
+;; Imp(X) v Opt(x) -> Om(X)
+(<== (normativeKnowledge ?beliefs-mt ?b ?c ?e)
+  (groundExpression ?e)
+  ;; something like this: (deonticSubsumes Optional Omissible), allows for 2nd-order deontic statuses to be queries for
+  (deonticSubsumes ?e-subset ?e)
+  (normativeKnowledge ?beliefs-mt ?b ?c ?e-subset))
+
+;; 2. Equivalence
+;; Obl(x) = Imp(not(x))
+;; *** Harder to work the other way for these, due to handling pruning of double negation and such.
+;; *** If we wish to infer through knowledge and not moral norms, worried about cycles here
+;; Obl(x) -> Imp(not(x))
+; (<== (normativeKnowledge ?beliefs-mt ?negated-b ?c Impermissible)
+;   (lookupOnly (ist-Information ?beliefs-mt (isa ?moral-norm MoralNorm)))
+;   (lookupOnly (ist-Information ?beliefs-mt (behavior ?moral-norm ?b)))
+;   (lookupOnly (ist-Information ?beliefs-mt (context ?moral-norm ?c)))
+;   (lookupOnly (ist-Information ?beliefs-mt (evaluation ?moral-norm Obligatory)))
+;   (unifies ?negated-b (not ?b)))
+; (<== (normativeKnowledge ?beliefs-mt ?negated-b ?c Obligatory)
+;   (lookupOnly (ist-Information ?beliefs-mt (isa ?moral-norm MoralNorm)))
+;   (lookupOnly (ist-Information ?beliefs-mt (behavior ?moral-norm ?b)))
+;   (lookupOnly (ist-Information ?beliefs-mt (context ?moral-norm ?c)))
+;   (lookupOnly (ist-Information ?beliefs-mt (evaluation ?moral-norm Impermissible)))
+;   (unifies ?negated-b (not ?b)))
+
+;; 3. Inference between worlds
+;; If X -> Y, then [Obl(x) -> Obl(y)]
+;; So… [Imp(y) -> Imp(x)] b/c [Obl(not(y)) -> Obl(not(x))]
+;; Action relations 1 & 2: implication via genls hierarchy and horn clauses (and thus, equality)
+;; *** THIS IS DEPRACATED AS OF 8/2/3. USE ENTAILS-CONJCONJ INSTEAD
+; (isa implies-ConjConj Relation)
+; (arity implies-ConjConj 2)
+; (arg1Isa implies-ConjConj CycLSentence)
+; (arg2Isa implies-ConjConj CycLSentence)
+; (comment implies-ConjConj "THIS IS DEPRACATED AS OF 8/2/3. USE ENTAILS-CONJCONJ INSTEAD. (implies-ConjConj (and (isa ?action EatingEvent)) (and (isa ?action Event))) is true because when the first argument is true, the second is as well (and when the second is false, the first is false).")
+
+(isa equiv-ConjConj Relation)
+(arity equiv-ConjConj 2)
+(arg1Isa equiv-ConjConj CycLSentence)
+(arg2Isa equiv-ConjConj CycLSentence)
+(comment equiv-ConjConj "(equiv-ConjConj (and (isa man1 MaleHuman)) (and (isa man1 MaleHuman))) holds because implication holds in both directions.")
+
+;; Given Obl(X)|C-genl, Obl(Y)|C is true when X -> Y and C -> C-genl
+(<== (normativeKnowledge ?beliefs-mt ?b ?c Obligatory)
+  (normativeKnowledge ?beliefs-mt ?b-spec ?c-genl Obligatory)
+  (not (variableExpression ?b))
+  (not (variableExpression ?c))
+  (entails-ConjConj ?c ?c-genl)
+  (entails-ConjConj (and ?b-spec ?c-genl) ?b))
+;; Given Imp(X)|C-genl, Imp(Y)|C is true when Y -> X and C -> C-genl
+(<== (normativeKnowledge ?beliefs-mt ?b ?c Impermissible)
+  (normativeKnowledge ?beliefs-mt ?b-genl ?c-genl Impermissible)
+  ;(implies-ConjConj ?c ?c-genl)
+  (not (variableExpression ?b))
+  (not (variableExpression ?c))
+  (entails-ConjConj (and ?b ?c) (and ?b-genl ?c-genl)))
+
+;; Opt(X) = not(Imp(X)) AND not(Obl(X))
+
+;; not(Imp(X)) = Perm(X) and X -> Y, not(Imp(Y)) = Perm(Y)
+(<== (normativeKnowledge ?beliefs-mt ?b ?c-genl Permissible)
+  (normativeKnowledge ?beliefs-mt ?b-spec ?c Permissible)
+  ;(implies-ConjConj ?c ?c-genl)
+  (not (variableExpression ?b))
+  (not (variableExpression ?c))
+  (entails-ConjConj ?c ?c-genl)
+  (entails-ConjConj (and ?b-spec ?c-genl) ?b))
+
+;; not(Obl(X)) = Om(X) and Y -> X, not(Obl(Y)) = Om(Y)
+(<== (normativeKnowledge ?beliefs-mt ?b ?c-genl Omissible)
+  (normativeKnowledge ?beliefs-mt ?b-genl ?c Omissible)
+  ;(implies-ConjConj ?c ?c-genl)
+  (not (variableExpression ?b))
+  (not (variableExpression ?c))
+  (entails-ConjConj ?c ?c-genl)
+  (entails-ConjConj (and ?b ?c-genl) ?b-genl))
+
+
+;; -------------------------------------------------------
+;;        Estimating moral knowledge from moral trust
+;; -------------------------------------------------------
+(isa normativeKnowledgeEstimate Relation)
+(comment normativeKnowledgeEstimate "An estimation of moral truth from evidence, taking into account things like speaker's moral reliability.")
+(arity normativeKnowledgeEstimate 4)
+(arg1Isa normativeKnowledgeEstimate CycLExpression)
+(arg2Isa normativeKnowledgeEstimate CycLExpression)
+(arg3Isa normativeKnowledgeEstimate CycLExpression)
+(arg4Isa normativeKnowledgeEstimate DeonticOperator)
+
+;;  2. what behaviors in what contexts are believed to have evaluation D?"
+(<== (normativeKnowledgeEstimate ?beliefs-mt ?b ?c ?d)
+  (groundExpression ?beliefs-mt)
+  (not (variableExpression ?b))
+  (not (variableExpression ?c))
+  ;; Get the most specific belief based on evidence
+  (outsourcedOnly
+    (DS-believed ?beliefs-mt ?prop 
+      (TheSet (normativeKnowledgeEstimate ?beliefs-mt ?b ?c Obligatory)
+        (normativeKnowledgeEstimate ?beliefs-mt ?b ?c Optional)
+        (normativeKnowledgeEstimate ?beliefs-mt ?b ?c Impermissible))))
+  ;; Turn its set notation into a propositional notation and see if the normative belief is equivalent to it
+  (FODframeEquivalent (normativeKnowledgeEstimate ?beliefs-mt ?b ?c ?d) ?prop-set)
+  (subsetOf ?prop ?prop-set))
+
+;; 
+(<== (normativeKnowledgeEstimate ?beliefs-mt ?b ?c ?d)
+  (groundExpression ?beliefs-mt)
+  (not (variableExpression ?b))
+  (variableExpression ?c)
+  ;; 1st, get some context to search for
+  (ist-Information ?beliefs-mt (isa ?norm Norm))
+  (groundExpression ?norm)
+  (ist-Information ?beliefs-mt (behavior ?norm ?b))
+  (ist-Information ?beliefs-mt (context ?norm ?c))
+  ;; Get the most specific belief based on evidence
+  (outsourcedOnly
+    (DS-believed ?beliefs-mt ?prop 
+      (TheSet (normativeKnowledgeEstimate ?beliefs-mt ?b ?c Obligatory)
+        (normativeKnowledgeEstimate ?beliefs-mt ?b ?c Optional)
+        (normativeKnowledgeEstimate ?beliefs-mt ?b ?c Impermissible))))
+  ;; Turn its set notation into a propositional notation
+  (FODframeEquivalent (normativeKnowledgeEstimate ?beliefs-mt ?b ?c ?d) ?prop-set)
+  (subsetOf ?prop ?prop-set))
+
+(<== (normativeKnowledgeEstimate ?beliefs-mt ?b ?c ?d)
+  (groundExpression ?beliefs-mt)
+  (not (variableExpression ?c))
+  (variableExpression ?b)
+  ;; 1st, check that there's a corresponding norm frame for this already...
+  (ist-Information ?beliefs-mt (isa ?norm Norm))
+  (groundExpression ?norm)
+  (ist-Information ?beliefs-mt (context ?norm ?c))
+  (ist-Information ?beliefs-mt (behavior ?norm ?b))
+  ;; Get the most specific belief based on evidence
+  (outsourcedOnly
+    (DS-believed ?beliefs-mt ?prop 
+      (TheSet (normativeKnowledgeEstimate ?beliefs-mt ?b ?c Obligatory)
+        (normativeKnowledgeEstimate ?beliefs-mt ?b ?c Optional)
+        (normativeKnowledgeEstimate ?beliefs-mt ?b ?c Impermissible))))
+  ;; Turn its set notation into a propositional notation
+  (FODframeEquivalent (normativeKnowledgeEstimate ?beliefs-mt ?b ?c ?d) ?prop-set)
+  (subsetOf ?prop ?prop-set))
+
+(<== (normativeKnowledgeEstimate ?beliefs-mt ?b ?c ?d)
+  (groundExpression ?beliefs-mt)
+  (variableExpression ?b)
+  (variableExpression ?c)
+  ;; 1st, check that there's a corresponding norm frame for this already...
+  (ist-Information ?beliefs-mt (isa ?norm Norm))
+  (groundExpression ?norm)
+  (ist-Information ?beliefs-mt (context ?norm ?c))
+  (ist-Information ?beliefs-mt (behavior ?norm ?b))
+  ;; Get the most specific belief based on evidence
+  (outsourcedOnly
+    (DS-believed ?beliefs-mt ?prop 
+      (TheSet (normativeKnowledgeEstimate ?beliefs-mt ?b ?c Obligatory)
+        (normativeKnowledgeEstimate ?beliefs-mt ?b ?c Optional)
+        (normativeKnowledgeEstimate ?beliefs-mt ?b ?c Impermissible))))
+  ;; Turn its set notation into a propositional notation
+  (FODframeEquivalent (normativeKnowledgeEstimate ?beliefs-mt ?b ?c ?d) ?prop-set)
+  (subsetOf ?prop ?prop-set))
+
+;; THIS ACTUALLY WON'T WORK WHEN AGENT'S HAVE PROVIDED > 1 PIECE OF EVIDENCE FOR THE NORMATIVE BELIEF. I.E., MULTIPLICATION IS NOT DISTRIBUTIVE ACROSS MULTIPLICATION
+; (<== (massFor ?event ?set2 ?m)
+;   (not (variableExpression ?set2))
+;   (FODframeEquivalent (normativeKnowledgeEstimate ?mt ?b ?c ?d) ?set2)
+;   (not (variableExpression ?b))
+;   (not (variableExpression ?c))
+;   (ist-Information ?mt (isa ?norm Norm))
+;   (ist-Information ?mt (context ?norm ?c))
+;   (ist-Information ?mt (behavior ?norm ?b))
+;   ;; 1. Determine the moral trust of the agent
+;   ;; B/c this is an expensive process, we will have a training step where these are computed and inserted into memory.
+;   (lookupOnly (moralTrust ?mt ?trust-val))
+;   (FODframeEquivalent (evaluation ?norm ?d) ?set3)
+;   ;; 2. Get all evidence the agent has provided for the norm in question
+;   (ist-Information ?mt (massFor ?event ?set3 ?mass))
+;   ;; 3. Scale it by their trust measure
+;   (evaluation ?m (TimesFn ?trust-val ?mass)))
+
+;; -------------------------------------------------------
+;; 				Reasoning Between Norms
+;; -------------------------------------------------------
+(isa LeftConjVarFn UnaryFunction)
+(arity LeftConjVarFn 1)
+(arg1Isa LeftConjVarFn CycLVariable)
+(resultIsa LeftConjVarFn SkolemTerm)
+(comment LeftConjVarFn "This function takes in a variable and outputs a skolem term. This is used to skolemize variables in the left conjunction when attempting to prove it entails the right conjunction e.g., in (entails-ConjConj conj-1 conj-2) all variables from conj-1 are skolemized via this function before computing entailment and returning bindings.")
+
+(isa entails-ConjConj Relation)
+(arity entails-ConjConj 2)
+(arg1Isa entails-ConjConj CycLSentence)
+(arg2Isa entails-ConjConj CycLSentence)
+;(arg3Isa entails-ConjConj (ListOfTypeFn ELInferenceBinding))
+(comment entails-ConjConj "(entails-ConjConj spec-conj genl-conj ?b-list) holds between the two conjunctions of CycLAtomicSentences when every model that satisfies spec-conj also satisfies genl-conj, given the bindings in ?b-list. I.e., when one abduces all statements within spec-conj, all statements within genl-conj (given that substitions have been made) can proven (usually given some background theory).")
+
+(isa firstPrincipleInvolved Relation)
+(comment firstPrincipleInvolved "A statement like (firstPrincipleInvolved norm1 HarmingAnAgent
+) states that the norm frame reified as norm1 maps to a first principle involving the behavior of type HarmingAnAgent. For example, the norm frame with context: (and ), and behavior: (and (isa ?action Bullying) (doneBy ?action ?agent)), maps to HarmingAnAgent.
+")
+(arity firstPrincipleInvolved 2)
+(arg1Isa firstPrincipleInvolved Norm)
+(arg2Isa firstPrincipleInvolved Collection)
+
+;; Consistency checks
+;; Using a notion from epistemic logic: Knows^(p) = not(Knows(not(p)))
+;; I.e., an epistemic state is consistent when one cannot prove an epistemic state that is inconsistent
+
+(isa consistentWithNormativeKnowledge Relation)
+(comment consistentWithNormativeKnowledge "A notion from epistemic logic: Knows^(p) = not(Knows(not(p))). I.e., a hypothetical epistemic state is consistent with what one already knows when one cannot prove an epistemic state that one already knows that is inconsistent.")
+(arity consistentWithNormativeKnowledge 2)
+(arg1Isa consistentWithNormativeKnowledge CycLExpression)
+(arg2Isa consistentWithNormativeKnowledge CycLExpression)
+
+(<== (consistentWithNormativeKnowledge ?agent (normativeKnowledge ?agent ?b ?c ?e1))
+  (deonticContraryOrContradictory ?e1 ?e2)
+  (uninferredSentence (normativeKnowledge ?agent ?b ?c ?e2)))
+
+;; *** This may be able to be used for blocking normative belief and be faster
+(<== (consistentWithNormativeKnowledge ?agent (normativeBelief ?agent ?b ?c ?e1))
+  (deonticContraryOrContradictory ?e1 ?e2)
+  (uninferredSentence (normativeKnowledge ?agent ?b ?c ?e2)))
+
+
+;; BRAINSTORMING
+;; ------------------------------------
+;; Three types of inconsistencies
+;; 1. (inconsistent-KnowKnow ?statement1 ?statement2) is true when both ?statement1 and ?statement2 are derived from a moral axiom (knowledge) and the two statements are inconsistent.
+;; 2. (inconsistent-BeliefKnow ?statement1 ?statement2) is true when ?statement1 is derived from a moral axiom (knowledge) and ?statement2 from empirical evidence (belief) and the two statements are inconsistent.
+;; 3. (inconsistent-BeliefBelief ?statement1 ?statement2) is true when both ?statement1 and ?statement2 are derived from empirical evidence (belief) and the two statements are inconsistent.
+;; 4. (nonOptimal-KnowPrev ?statement1 ?statement2) is true when both ?statement1 is derived from a moral axiom (knowledge) and ?statement2 is a belief in how often a behavior happens that is derived from empirical evidence (belief) and the two statements are inconsistent (the evidence suggests a non-optimal world e.g., a behavior that is impermissible happens often)
+;; 5. (nonOptimal-BeliefPrev ?statement1 ?statement2) is true when both ?statement1 is a noramtive belief derived from empirical evidence and ?statement2 is a belief in how often a behavior happens that is derived from empirical evidence (belief) and the two statements are inconsistent (the evidence suggests an inconsistent world e.g., a behavior that is impermissible happens often)
+
+
+(isa inconsistentEpistemicStates Relation)
+(comment inconsistentEpistemicStates "")
+(arity inconsistentEpistemicStates 3)
+(arg1Isa inconsistentEpistemicStates CycLExpression)
+(arg2Isa inconsistentEpistemicStates CycLExpression)
+(arg3Isa inconsistentEpistemicStates CycLExpression)
+
+(isa inconsistent-KnowKnow Relation)
+(comment inconsistent-KnowKnow "(inconsistent-KnowKnow ?statement1 ?statement2) is true when either ?statement1 or ?statement2 entail eachother yet both cannot be true at the same time.")
+(arity inconsistent-KnowKnow 3)
+(arg1Isa inconsistent-KnowKnow CycLExpression)
+(arg2Isa inconsistent-KnowKnow CycLExpression)
+(arg3Isa inconsistent-KnowKnow CycLExpression)
+
+(isa inconsistent-BeliefKnow Relation)
+(arity inconsistent-BeliefKnow 3)
+(arg1Isa inconsistent-BeliefKnow CycLExpression)
+(arg2Isa inconsistent-BeliefKnow CycLExpression)
+(arg3Isa inconsistent-BeliefKnow CycLExpression)
+
+(isa inconsistent-BeliefBelief Relation)
+(arity inconsistent-BeliefBelief 3)
+(arg1Isa inconsistent-BeliefBelief CycLExpression)
+(arg2Isa inconsistent-BeliefBelief CycLExpression)
+(arg3Isa inconsistent-BeliefBelief CycLExpression)
+
+(isa nonOptimal-KnowPrev Relation)
+(arity nonOptimal-KnowPrev 3)
+(arg1Isa nonOptimal-KnowPrev CycLExpression)
+(arg2Isa nonOptimal-KnowPrev CycLExpression)
+(arg3Isa nonOptimal-KnowPrev CycLExpression)
+
+(isa nonOptimal-BeliefPrev Relation)
+(arity nonOptimal-BeliefPrev 3)
+(arg1Isa nonOptimal-BeliefPrev CycLExpression)
+(arg2Isa nonOptimal-BeliefPrev CycLExpression)
+(arg3Isa nonOptimal-BeliefPrev CycLExpression)
+
+;; Not inconsistent or non-optimal, but weak
+;; 1. (weak-KnowBelief ?statement1 ?statement2) is true when epistemic state ?statement1 is derived from a moral axiom (knowledge) and ?statement2 from empirical evidence (belief) but the evaluation present in ?statement2 is weaker than that of ?statement1. For example, the ?eval is believed to be Permissible, when it should be Obligatory.
+
+(<== (inconsistentEpistemicStates ?beliefs-mt ?s1 ?s2)
+  (inconsistent-KnowKnow ?beliefs-mt ?s1 ?s2))
+
+(<== (inconsistentEpistemicStates ?beliefs-mt ?s1 ?s2)
+  (inconsistent-BeliefKnow ?beliefs-mt ?s1 ?s2))
+
+; (<== (inconsistentEpistemicStates ?beleifs-mt ?s1 ?s2)
+;   (inconsistent-BeliefBelief ?beliefs-mt ?s1 ?s2))
+
+(<== (inconsistentEpistemicStates ?beliefs-mt ?s1 ?s2)
+  (nonOptimal-KnowPrev ?beliefs-mt ?s1 ?s2))
+
+(<== (inconsistentEpistemicStates ?beliefs-mt ?s1 ?s2)
+  (nonOptimal-BeliefPrev ?beliefs-mt ?s1 ?s2))
+
+;; Detecting moral dilemmas
+;; ------------------------------------------
+;; A moral dillemma is of type 1. I.e., when knows(agent, ?b, ?c, ?e) and knows(agent, ?b, ?c, ?e') are both true, where ?e entails not(?e').
+;; E.g., an action type is seen as both impermissible and obligatory due to internal moral norms and knowledge of the action type collections and their relations. For example, I know I should send a caravan to SAVE 1,000 people. However, the sending is also an instance of not saving the other 100 people I could send it to.
+;; ***The thing below is almost saying, assuming that an agent knows both of these (not that they actually do), is this inconsistent?
+(<== (inconsistent-KnowKnow ?beliefs-mt ?stmt-1 (normativeKnowledge ?beliefs-mt ?b ?c ?e2))
+  ;; Prove a normative statement the agents knows
+  (unifies ?stmt-1 (normativeKnowledge ?beliefs-mt ?b ?c ?e1))
+  (normativeKnowledge ?beliefs-mt ?b ?c ?e1)
+  ;; Get the contrary and contradictory deontic statuses of that which is known
+  (deonticContraryOrContradictory ?e1 ?e2)
+  ;; See if we can prove that the agent knows this deontic status as well
+  (unifies ?stmt-2 (normativeKnowledge ?beliefs-mt ?b ?c ?e2))
+  (normativeKnowledge ?beliefs-mt ?b ?c ?e2))
+
+
+;; Judging a population's beliefs
+;; ------------------------------------------
+;; 1: Using our own internal standards (checking for consistency with our knowledge). Of type 2
+(<== (inconsistent-BeliefKnow ?beliefs-mt (normativeBelief ?beliefs-mt ?b ?c ?e2) 
+  (normativeKnowledge ?beliefs-mt ?b ?c ?e1))
+  ;; Prove a normative statement the agents believes based on evidence
+  (normativeBelief ?beliefs-mt ?b ?c ?e2)
+  ;; Get the contrary and contradictory deontic statuses of that which is known
+  (deonticContraryOrContradictory ?e1 ?e2)
+  ;; Attempt to prove an inconsistent normative statement the agent knows
+  (normativeKnowledge ?beliefs-mt ?b ?c ?e1)
+  ;; If so, there's a contradiction between their knowledge and their belief based on evidence...
+  )
+
+;; *** Believes relation does not "go up" in generality over evaluation and prevalence FoD. For example, can't get believes(PERM) without having the evalution be bound...
+;; *** Also, need to ensure that the most specific belief is of 2nd-order b/c belief in Obligatory implies belief in Permissible.
+;; 1: Internal standards are stronger than that of societies
+; (<== (weak-BeliefKnow ?agent (normativeBelief ?beliefs-mt ?b ?c ?e2) 
+;   (normativeKnowledge ?beliefs-mt ?b ?c ?e1))
+;   ;; Prove a normative statement the agents believes based on evidence
+;   (normativeBelief ?beliefs-mt ?b ?c ?e2)
+;   ;; Get the contrary and contradictory deontic statuses of that which is known
+;   (deonticSubsumes ?e1 ?e2)
+;   ;; Attempt to prove an inconsistent normative statement the agent knows
+;   (normativeKnowledge ?beliefs-mt ?b ?c ?e1)
+;   ;; If so, there's a contradiction between their knowledge and their belief based on evidence...
+;   )
+
+;; 2: Using belief of their standards (checking for consistency among their beliefs). Of type 3
+; (<== (inconsistent-BeliefBelief ?agent (normativeBelief ?beliefs-mt ?b ?c1 ?e1) (normativeBelief ?beliefs-mt ?b ?c2 ?e2))
+;   ;; Prove a normative statement the agents believes based on evidence
+;   (normativeBelief ?beliefs-mt ?b ?c1 ?e1)
+;   ;; Get the contrary and contradictory deontic statuses of that which is believed
+;   (deonticContraryOrContradictory ?e1 ?e2)
+;   ;; *** Should this inference be in the believes rules themselves?
+;   (genls ?c2 ?c1)
+;   ;; Attempt to prove an inconsistent normative statement the agent believes based on evidence
+;   (normativeBelief ?beliefs-mt ?b ?c2 ?e2)
+;   ;; If the contexts are related, there's a contradiction in their belief based on evidence...
+;   ;; This will likely be an "exeption" where one is not specific enough like so: "You should not yell in the library." where the exeption is "You can yell in the library when it's empty". What you really meant the first time is "...When the library is not empy."
+;   )
+
+;; Judging a population's performance of actions (or beliefs about frequency of performance)
+;; ------------------------------------------
+;; 1: Using our own internal standards (checking for consistency with our knowledge). Of type 4
+(<== (nonOptimal-KnowPrev ?beliefs-mt (normativeKnowledge ?beliefs-mt ?b ?c2 ?e) (prevalenceBelief ?beliefs-mt ?b ?c ?p))
+  ;; Attempt to prove a normative statement the agent knows
+  (normativeKnowledge ?beliefs-mt ?b ?c2 ?e)
+  ;; Get evaluations that are non-optimal given the prevalence
+  (contradictoryFrequencyOfEvaluation ?e ?p)
+  ;; Prove a contradictory prevalence the agents believes based on evidence
+  (prevalenceBelief ?beliefs-mt ?b ?c ?p)
+  ;; If so, there's a contradiction between their knowledge and their belief of how often the behavior occurs...
+  )
+
+; ;; 2: Using evidence of their standards (checking for consistency among their beliefs and their actions). Of type 5
+(<== (nonOptimal-BeliefPrev ?beliefs-mt (normativeBelief ?beliefs-mt ?b ?c ?e) (prevalenceBelief ?beliefs-mt ?b ?c ?p))
+  ;; Attempt to prove a normative statement the agent believes
+  (normativeBelief ?beliefs-mt ?b ?c ?e)
+  ;; Get evaluations that are non-optimal given the evaluation
+  (contradictoryFrequencyOfEvaluation ?e ?p)
+  ;; Prove a normative statement the agents believes based on evidence
+  (prevalenceBelief ?beliefs-mt ?b ?c ?p)
+  ;; If so, there's a contradiction between their knowledge and their belief of how often the behavior occurs...
+  )
+
+;; --------------------------------------------

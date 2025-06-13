@@ -1,0 +1,419 @@
+;; All of the facts from the genlMts of MC-BackgroundKnowledgeMt (e.g., SportsMt) can be found at https://www.qrg.northwestern.edu/nextkb/index.html
+
+(in-microtheory MC-BackgroundKnowledgeMt)
+(comment MC-BackgroundKnowledgeMt "Contains necessary knowledge for reasoning in the moral-conventional transgressions task domain. But really contains domain-general knowledge about actions, their entailments, and so on.")
+ (genlMt MC-BackgroundKnowledgeMt BaseKB)
+ (genlMt MC-BackgroundKnowledgeMt BiologyMt)
+ (genlMt MC-BackgroundKnowledgeMt CausalityMt)
+ (genlMt MC-BackgroundKnowledgeMt EarthObservationalAstronomyMt)
+ (genlMt MC-BackgroundKnowledgeMt EcologyMt)
+ (genlMt MC-BackgroundKnowledgeMt FmiGamesMt)
+ (genlMt MC-BackgroundKnowledgeMt FolkPsychologyMt)
+ (genlMt MC-BackgroundKnowledgeMt HumanSocialLifeMt)
+ (genlMt MC-BackgroundKnowledgeMt NaiveDeviceBehaviorMt)
+ (genlMt MC-BackgroundKnowledgeMt NaivePhysicsMt)
+ (genlMt MC-BackgroundKnowledgeMt NaivePhysicsVocabularyMt)
+ (genlMt MC-BackgroundKnowledgeMt NaiveSteamTheoryMt)
+ (genlMt MC-BackgroundKnowledgeMt QuantityVocabularyMt)
+ (genlMt MC-BackgroundKnowledgeMt SportsMt)
+ (genlMt MC-BackgroundKnowledgeMt TemporalReasoningMt)
+ (genlMt MC-BackgroundKnowledgeMt UniversalVocabularyMt)
+ (genlMt MC-BackgroundKnowledgeMt WorldGeographyMt)
+;;(genlMt MC-BackgroundKnowledgeMt HumanActivitiesMt)
+
+(in-microtheory MC-Facts-BackgroundKnowledgeMt)
+(genlMt MC-BackgroundKnowledgeMt MC-Facts-BackgroundKnowledgeMt)
+;; ----------------------------------
+;; Installing principles into ontology
+
+;; *** HostileSocialAction needs to broken out into non-normative action types. ***
+;; Specs: Accusing , BlockingAnInternationalWaterway , DiscriminatoryAction , Extortion , FactionalConflict , GloballyThreateningAction , Harassment , HoldingHostage , HostileSeizure , HostileSocialAction , Intrude , MilitaryOccupation , NavalBlockade , Oppression , Persecution , RevengeAction , SeizingAndHoldingHostage , TakingAdvantageOfSomething , TerroristAct , TerrorizingSomeone , Vandalism , ViolentAction , (AttemptingFn (CollectionIntersection2Fn Takeover (HostileSeizureOfTypeFn LegalCorporation))) , (HijackingAFn Ship)
+
+; Sorting these into 1st principles from Kohlberg and Turiel:
+; Principle 1. Justice/FAIRNESS?: DiscriminatoryAction
+(isa UnfairAction DurativeEventType)
+(genls DiscriminatoryAction UnfairAction)
+; Principle 2. Harm: TerrorizingSomeone, ViolentAction, RevengeAction
+(genls ViolentAction HarmingAnAgent)
+(genls KillingPerson HarmingAnAgent)
+(genls TerrorizingSomeone HarmingAnAgent)
+(genls RevengeAction HarmingAnAgent)
+; Principle 3. Rights/FREEDOM?: Extortion, HoldingHostage, HostileSeizure, MilitaryOccupation, Oppression, Persecution, SeizingAndHoldingHostage, TakingAdvantageOfSomething, Vandalism , (AttemptingFn (CollectionIntersection2Fn Takeover (HostileSeizureOfTypeFn LegalCorporation))), (HijackingAFn Ship), Harassment
+(isa EncroachingOnFreedomOfAgent DurativeEventType)
+(comment EncroachingOnFreedomOfAgent "An act that takes away an agent's freedom in a way that is one sided and often manipulative.")
+(genls CapturingSomething EncroachingOnFreedomOfAgent)
+(genls Extortion EncroachingOnFreedomOfAgent) 
+(genls HoldingHostage EncroachingOnFreedomOfAgent) 
+(genls HostileSeizure EncroachingOnFreedomOfAgent) 
+(genls MilitaryOccupation EncroachingOnFreedomOfAgent) 
+(genls Oppression EncroachingOnFreedomOfAgent) 
+(genls Persecution EncroachingOnFreedomOfAgent) 
+(genls SeizingAndHoldingHostage EncroachingOnFreedomOfAgent) 
+(genls TakingAdvantageOfSomething EncroachingOnFreedomOfAgent) 
+(genls Vandalism EncroachingOnFreedomOfAgent) 
+(genls (AttemptingFn (CollectionIntersection2Fn Takeover (HostileSeizureOfTypeFn LegalCorporation))) EncroachingOnFreedomOfAgent) 
+(genls (HijackingAFn Ship) EncroachingOnFreedomOfAgent)
+(genls Harassment EncroachingOnFreedomOfAgent)
+(genls CoercingAnAgent EncroachingOnFreedomOfAgent)
+(genls Manipulating-InfluencingAnAgent EncroachingOnFreedomOfAgent)
+(genls BreachOfPrivacy EncroachingOnFreedomOfAgent)
+(comment BreachOfPrivacy "Privacy is having control over the extent, timing, and circumstances of sharing oneself (physically, behaviorally, or intellectually) or information about oneself with others. Each instance of BreachOfPrivacy is thus an action where the performer records, perceives, reveals, etc. information that is controlled/owned by some other individual when they have not consented.")
+; Principle 4. Welfare:
+; Principle 5. Allocation of resources: BlockingAnInternationalWaterway
+(isa PreventingAgentAccessToNecessaryResources DurativeEventType)
+(comment PreventingAgentAccessToNecessaryResources "To stop agent(s) from getting resources that they need for survival e.g., food by starving them.")
+(genls BlockingAnInternationalWaterway PreventingAgentAccessToNecessaryResources)
+(genls (PreventingFn ConsumingFoodOrDrink) PreventingAgentAccessToNecessaryResources)
+
+;; Linking up action types
+(isa StarvingAnAgent DurativeEventType)
+(comment StarvingAnAgent "To withold food from an agent. If prolonged, it results in death of the agent being prevented access to food and become an instance of Murder.")
+(genls StarvingAnAgent (PreventingFn ConsumingFoodOrDrink))
+(genls PushingSomeone PhysicallyAttackingAnAgent)
+(genls (SubcollectionOfWithRelationToTypeFn HittingAnObject objectActedOn Person) PhysicallyAttackingAnAgent)
+(isa Bullying DurativeEventType)
+(genls Bullying HarmingAnAgent)
+(isa TakingTurns DurativeEventType)
+(comment TakingTurns "Where sharing often has defined limits as to how long each agent gets with a certain object, with turn-taking each individual usually decides when to give possession up. An example: you want to play basketball but the only one in the gym is being used by another. You should go up and ask for a turn with the basketball.")
+(genls TakingTurns Sharing)
+(isa TalkingBack DurativeEventType)
+(comment TalkingBack "challenging a person of authority by contradicting a command.")
+(genls TalkingBack InsultingSomeone)
+(isa ShowAndTell DurativeEventType)
+(comment ShowAndTell "A classroom exercise where students bring something, display it, and discuss it.")
+(genls ShowAndTell ClassMeeting)
+(isa CommunityCircle DurativeEventType)
+(comment CommunityCircle "A classroom exercise where students sit in a circle facing eachother and engage in discussion.")
+(genls CommunityCircle ClassMeeting)
+(isa Communion DurativeEventType)
+(comment Communion "The service of Christian worship at which bread and wine are consecrated and shared.")
+(genls Communion ChurchService)
+(isa BreakingAPromise DurativeEventType)
+(comment BreakingAPromise "To not hold up to the standards set out by a promise, or a spoken statement that creates an agreement.")
+(genls BreakingAPromise BreakingAnAgreement)
+(genls Sharing HelpingAnAgent)
+(genls EnslavingSomeone CapturingSomething) ;;SeizingAndHoldingCaptive ???
+(genls Ordain Ritual)
+(genls (CausingFn Dying) KillingByOrganism)
+(genls (CausingFn InjuryOutcome) HarmingAnAgent)
+(genls (CausingFn (ExperiencingEmotionFn Offendedness-Feeling)) InsultingSomeone)
+(genls Addressing-GreetingSomeone-FirstName Addressing-GreetingSomeone)
+(genls Addressing-GreetingSomeone-LastName Addressing-GreetingSomeone)
+(genls ShootingAgentWithProjectileWeapon HarmingAnAgent)
+(genls ShootingSomeone ShootingAgentWithProjectileWeapon)
+(isa PullingAgentsHair DurativeEventType)
+(genls PullingAgentsHair HarmingAnAgent)
+(genls (IntentionallyFn
+              (SubcollectionOfWithRelationToTypeFn HarmingAnAgent
+                objectActedOn Reputation)) InsultingSomeone)
+(genls Makeup SomethingToWear)
+(genls (CausingFn (ExperiencingEmotionFn Unhappiness)) HarmingAnAgent) ;; hurting feelings
+
+;; Reformulations
+;; ---------------------------------------------------------------------
+;; Collections
+(reformulationOf HomosexualBehavior-Male (SubcollectionOfWithRelationToTypeFn (SubcollectionOfWithRelationToTypeFn SexualBehavior bodilyDoer MaleAnimal) performedBy MaleAnimal))
+(reformulationOf HomosexualBehavior-Female (SubcollectionOfWithRelationToTypeFn (SubcollectionOfWithRelationToTypeFn SexualBehavior bodilyDoer FemaleAnimal) performedBy FemaleAnimal))
+(reformulationOf KillingPerson (SubcollectionOfWithRelationToTypeFn KillingByOrganism organismKilled Person))
+(reformulationOf PushingSomeone (SubcollectionOfWithRelationToTypeFn PushingAnObject objectActedOn Person))
+(reformulationOf PunchingSomeone (SubcollectionOfWithRelationToTypeFn (SubcollectionOfWithRelationToTypeFn HittingAnObject objectActedOn Person) bodyPartsUsed Fist))
+(reformulationOf SuccoringSomeone (SubcollectionOfWithRelationToTypeFn HelpingAnAgent beneficiary (SubcollectionOfWithRelationToTypeFn Agent-Generic feelsEmotion (ExperiencingEmotionFn Distress))))
+(reformulationOf KickingAnOpponent (SubcollectionOfWithRelationToTypeFn Kicking objectHarmed Agent-Generic))
+(reformulationOf ShootingAgentWithProjectileWeapon (SubcollectionOfWithRelationToTypeFn ShootingAProjectileWeapon to-Generic Agent-Generic))
+(reformulationOf PullingAgentsHair (SubcollectionOfWithRelationToTypeFn PullingAnObject objectActedOn (SubcollectionOfWithRelationToTypeFn Hair-Stuff ownerOfProprietaryThing Agent-Generic)))
+(reformulationOf Arson (SubcollectionOfWithRelationToTypeFn SettingSomethingOnFire objectActedOn Property))
+(reformulationOf HarmingAnAgent (SubcollectionOfWithRelationToTypeFn (CausingFn DamageOutcome) objectHarmed Person))
+
+
+;; Expressions ???
+; (reformulationOf (headHairLength ?x (LongFn HairOnHead-Human))
+; 	(and (ownerOfProprietaryThing ?hair ?x)
+; 	(isa ?hair Hair-Stuff)
+; 	(lengthOfObject ?hair Long)))
+
+(isa activeActors Predicate)
+(comment activeActors "An instance of ActorSlot (q.v.). activeActors is a broad relation that holds between a given event and a thing that plays an active (as opposed to passive or instrumental) role in the event. This is basically a union between: deliberateActors and playsActiveSubjectRole.")
+;;deliberateActors
+;;playsActiveSubjectRole
+(arity activeActors 2)
+(arg1Isa activeActors Event)
+(arg2Isa activeActors SomethingExisting)
+(genlPreds deliberateActors activeActors)
+(genlPreds doneBy activeActors)
+(genlPreds wearer performedBy)
+(genlPreds adversaryInConflict activeActors)
+
+(<== (genlPreds ?pred1 ?pred2)
+	(variableExpression ?pred1)
+	(groundExpression ?pred2)
+	(isa ?pred2 Predicate)
+	(unifies ?pred1 ?pred2))
+
+(<== (genlPreds ?pred1 ?pred2)
+	(variableExpression ?pred2)
+	(groundExpression ?pred1)
+	(isa ?pred1 Predicate)
+	(unifies ?pred2 ?pred1))
+
+(isa frequencyOfActionTypeForAgent QuaternaryPredicate)
+(arity frequencyOfActionTypeForAgent 4)
+(arg1Isa frequencyOfActionTypeForAgent FirstOrderCollection)
+(arg2Isa frequencyOfActionTypeForAgent Agent-Generic)
+(arg3Isa frequencyOfActionTypeForAgent BinaryRolePredicate)
+(arg4Isa frequencyOfActionTypeForAgent Frequency)
+(comment frequencyOfActionTypeForAgent "A predicate for stating the frequency with which an individual agent plays a given role in certain types of event. (frequencyOfActionTypeForAgent ACTTYPE ACTOR ROLE FREQUENCY) states that the agent ACTOR plays the role ROLE in instances of events of type ACTTYPE with frequency FREQUENCY. This is similar to the relation (frequencyOfActionType ACTTYPE ACTORTYPE ROLE FREQUENCY) but with a reified agent rather than a type of agent.")
+
+;; GenFormats
+;; ----------------------------------
+(genFormat activeActors "~a ~a" (TheList 2 1))
+(genFormat maritalStatus "~a is a(n) ~a" (TheList 1 2))
+
+(in-microtheory MC-Rules-BackgroundKnowledgeMt)
+(genlMt MC-BackgroundKnowledgeMt MC-Rules-BackgroundKnowledgeMt)
+;; reasoning between actions
+;; ----------------------------
+
+;; For relating instances to more descriptive collections in which certain binpreds must hold, like in SubcollectionOfWithRelationToTypeFn
+(<== (isa ?inst ?instType)
+	(matches 
+	        (SubcollectionOfWithRelationToTypeFn ?coll ?binpred ?type) 
+	        ?instType)
+	  (not (variableExpression ?coll)) 
+	  (not (variableExpression ?binpred)) 
+	  (not (variableExpression ?type))
+	  (useTransitiveInference (isa ?inst ?coll))
+	  ; (wmOnly (isa ?inst ?inst-col))
+	  ; (ist-Information MC-Facts-BackgroundKnowledgeMt (genls ?inst-col ?coll))
+	  (?binpred ?inst ?thing2)
+	  ;; *** sometimes these are nested, so this does not capture that
+	  ; (isa ?thing2 ?thing2-type)
+	  ;; *** transitive inference
+	  ;(ist-Information MC-BackgroundKnowledgeMt (genls ?thing2-type ?type))
+	  (isa ?thing2 ?type))
+
+;; Case like: (SubcollectionOfWithRelationToFn (UsingAForFn CombForHair Grooming deviceUsed) objectActedOn hair123)
+(<== (isa ?inst ?instType)
+	(matches 
+	        (SubcollectionOfWithRelationToFn ?coll ?binpred ?thing) 
+	        ?instType)
+	  (not (variableExpression ?coll))
+	  (not (variableExpression ?binpred))
+	  (not (variableExpression ?thing))
+	  (useTransitiveInference (isa ?inst ?coll))
+	  ; (wmOnly (isa ?inst ?inst-col))
+	  ; (ist-Information MC-Facts-BackgroundKnowledgeMt (genls inst-col ?coll))
+	  (?binpred ?inst ?thing))
+
+;; *** Working backwards from SubcollectionOf would go something like this
+; (<== (isa ?coll-thing ?coll)
+;   (not (matches (SubcollectionOfWithRelationToTypeFn ?some-col ?some-binpred ?some-type) ?coll-thing))
+; 	(isa ?coll-thing (SubcollectionOfWithRelationToTypeFn ?coll ?binpred ?thingType)))
+
+; ;; *** ?thing-entity likely needs to be reified if it's unbound
+; (<== (isa ?thing-entity ?thingType)
+; 	(?binpred ?coll-thing ?thing-entity)
+; 	(isa ?coll-thing (SubcollectionOfWithRelationToTypeFn ?coll ?binpred ?thingType)))
+
+; (<== (?binpred ?coll-thing ?thing-entity)
+; 	(isa ?thing-entity ?thingType)
+; 	(isa ?coll-thing (SubcollectionOfWithRelationToTypeFn ?coll ?binpred ?thingType)))
+
+; (<== (isa ?coll-thing ?coll)
+; 	(isa ?coll-thing (SubcollectionOfWithRelationToFn ?coll ?binpred ?thing-entity)))
+
+; (<== (?binpred ?coll-thing ?thing-entity)
+; 	(isa ?coll-thing (SubcollectionOfWithRelationToFn ?coll ?binpred ?thing-entity)))
+
+; ;; *** To work backwards, the subcollectionOf representation needs transformations like above
+; (<== (isa ?inst ?spec-formulation)
+; 	(ist-Information MC-BackgroundKnowledgeMt (reformulationOf ?genl-formulation ?spec-formulation))
+; 	(useTransitiveInference (isa ?inst ?genl-formulation)))
+
+
+; (<== (isa ?act BreachOfPrivacy)
+; 	(isa ?act RevealingPreference)
+; 	(senderOfInfo ?act ?speaker)
+; 	(preferenceOf ?act ?owner)
+; 	(preferenceAbout ?act ?thing)
+; 	(impermissibleInMicrotheory (and (isa ?act RevealingPreference)
+; 																									(senderOfInfo ?act ?speaker)
+; 																									(preferenceOf ?act ?owner)
+; 																									(preferenceAbout ?act ?thing))
+; 		?context) ;need to get mt the query was invoked within
+; 	; (uninferredSentence (normativeBelief ?owner (and (isa ?act RevealingPreference)
+; 	; 																								(senderOfInfo ?act ?speaker)
+; 	; 																								(preferenceOf ?act ?owner)
+; 	; 																								(preferenceAbout ?act ?thing))
+; 	; 																						?context Permissible))
+; 	)
+
+(<== (isa ?inst ?formulation-1)
+	(ist-Information MC-Facts-BackgroundKnowledgeMt (reformulationOf ?formulation-1 ?formulation-2))
+	(isa ?inst ?formulation-2))
+
+(<== (isa ?inst ?formulation-1)
+	(ist-Information MC-Facts-BackgroundKnowledgeMt (reformulationOf ?formulation-2 ?formulation-1))
+	(isa ?inst ?formulation-2))
+
+;; where actions occur, there is the agent doing the action
+(<== (objectFoundInLocation ?agent ?loc)
+	(eventOccursAt ?act ?loc)
+	(activeActors ?act ?agent))
+
+(<== (headHairLength ?x (ShortFn HairOnHead-Human))
+	(ownerOfProprietaryThing ?hair ?x)
+	(isa ?hair Hair-Stuff)
+	(lengthOfObject ?hair Short))
+
+(<== (headHairLength ?x (LongFn HairOnHead-Human))
+	(ownerOfProprietaryThing ?hair ?x)
+	(isa ?hair Hair-Stuff)
+	(lengthOfObject ?hair Long))
+
+;; Banishing someone because they are disabled is a DiscriminatoryAction
+(<== (isa ?action DiscriminatoryAction)
+	(patient-Generic ?action ?other-agent)
+	(doneBy ?action ?agent)
+	(isa ?action BanishingSomeone)
+	(reasonsForAction ?action perceivesThat ?agent (isa ?other-agent ?agent-type))
+	(ist-Information MC-Facts-BackgroundKnowledgeMt (genls ?agent-type PersonWithPhysiologicalCondition)))
+
+;; Ridiculing someone for being disabled is Harassment
+(<== (isa ?action Harassment)
+	(isa ?action Ridiculing)
+	(objectOfEvaluation ?action ?object)
+	(topicOfInfoTransfer ?action
+		(isa ?object ?agent-type))
+	(ist-Information MC-Facts-BackgroundKnowledgeMt (genls ?agent-type PersonWithPhysiologicalCondition)))
+
+;; Being selfish -> you rarely help others
+(<== (frequencyOfActionTypeForAgent HelpingAnAgent ?agent activeActors Rarely)
+	(hasPersonalQuantity ?agent Selfishness))
+
+;; E.g., If the frequency of your role in some action is NEVER, then it is not SOMETIMES
+(<== (not (frequencyOfActionTypeForAgent ?act-type ?agent ?role-relation ?higher-val))
+	(frequencyOfActionTypeForAgent ?act-type ?agent ?role-relation ?lower-val)
+	(ist-Information NormativeMt (lessThan ?lower-val ?higher-val)))
+
+;; Coercing with a gun is an instance of terrorizing someone
+(<== (isa ?action TerrorizingSomeone)
+	(isa ?action CoercingAnAgent)
+	(instrument-Generic ?action ?weapon)
+	(isa ?weapon Weapon))
+
+;; Using anothers credit card -> stealing
+(<== (isa ?action Stealing)
+	(possessiveRelation ?other-agent ?card)
+	(isa ?card CreditCard)
+	(isa ?action Buying)
+	(buyer ?action ?agent)
+	(instrument-Generic ?action ?card)
+	;; without their permission
+	(not (isa ?permission (SubcollectionOfWithRelationToFn 
+		(SubcollectionOfWithRelationToTypeFn GrantingPermission topOfInfoTransfer 
+			(SubcollectionOfWithRelationToFn Buying instrument-Generic ?card)) permitter ?other-agent))))
+
+;; Putting explosive devices on objects that humans occupy (like a bus), is a violent action
+(<== (isa ?action ViolentAction)
+	(isa ?action PuttingSomethingSomewhere)
+	(isa ?loc HumanlyOccupiedSpatialObject)
+	(to-Generic ?action ?loc)
+	(objectPlaced ?action ?dev)
+	(isa ?dev ExplosiveDevice))
+
+;; Punishing the innocent is unfair
+(<== (not (mannerOfAction ?punish Fairness))
+	(not (doneBy ?badaction ?agent))
+	(fe_reason ?punish ?badaction)
+	(objectOfEvaluation ?punish ?agent)
+	(isa ?punish Punishing))
+
+;; Hiring someone because they are a relative is unfair
+(<== (not (mannerOfAction ?action Fairness))
+	(isa ?action EmployeeHiring)
+	(hirer ?action ?agent)
+	(relatives ?agent ?other-agent)
+	(hirer ?action ?agent)
+	(hiredPerson ?action ?other-agent)
+	(reasonsForAction ?action relatives ?agent ?other-agent))
+
+(<== (isa ?action UnfairAction)
+	(mannerOfAction ?action Unfairness))
+
+(<== (mannerOfAction ?action Unfairness)
+	(not (mannerOfAction ?action Fairness)))
+
+;; Surgeon leaving emergency room unattended
+; (<== (isa ?action SOMETHING)
+; 	(objectFoundInLocation ?agent ?e-room)
+; 	(isa ?agent Surgeon)
+; 	(isa ?e-room EmergencyRoom)
+; 	;; there's no other surgeon in the room
+; 	(not (isa ?other-surgeon (SubcollectionOfWithRelationToFn (SubcollectionOfWithRelationToFn Surgeon objectFoundInLocation ?e-room) different ?agent)))
+; 	(isa ?action LeavingAPlace)
+; 	(from-Generic ?action ?e-room))
+
+(<== (isa ?agent MaleAnimal)
+	(hasBiologicalSex ?agent Male))
+
+(<== (hasBiologicalSex ?agent Male)
+	(isa ?agent MaleAnimal))
+
+(<== (isa ?agent FemaleAnimal)
+	(hasBiologicalSex ?agent Female))
+
+(<== (hasBiologicalSex ?agent Female)
+	(isa ?agent FemaleAnimal))
+
+;; Causality: when B1 is proven, there is a causal link to proving B2 i.e., B2 can be proven if we let the world run it's natural laws (even w/o human intervention. Assuming a very Western ideal of humans being separate from nature here...)
+;; ----------------------------------
+;; *** So, what's the important difference between causality and genls again?... It seems like causal information is assumed in a lot of the genls statements we have in the KB. Extrapolating this out to causality may be more descriptive.
+;; "Unless intervened or some random luck (bullet misses or another object falls out of the sky and gets in the way of the bullet) shooting someone will cause them bodily harm." Thus, shooting at someone causes bodily harm.
+;; In the short time interval after moving into a posture, you are in that posture
+(<== (holdsIn (STIF ?act) (postureOfAnimal ?whoever ?posture))
+	(isa ?act (MovingIntoPostureFn ?posture))
+	(affectedAgent ?act ?whoever))
+
+(<== (holdsIn (STIF ?act) (postureOfAnimal ?whoever UprightPosture))
+	(isa ?act StandingUp)
+	(doneBy ?act ?whoever))
+
+(<== (holdsIn (STIF ?act) (postureOfAnimal ?whoever SittingPosture))
+	(isa ?act SittingDown)
+	(doneBy ?act ?whoever))
+
+; (causes-SitTypeSitType AttackOnTangible IncurringBodilyHarm)
+; (causes-SitTypeSitType HarmingAnAgent IncurringBodilyHarm)
+; (causes-SitTypeSitType AdverseSocialAction Displeasure)
+
+;; 3. Entailment: when B1 is proven, B2 must have been true (not necessarily by the same agent)
+;; ----------------------------------
+;; Eating meat entails that some animal has died or will die...
+; (<== (and (isa ?action KillingByOrganism) (organismKilled ?action ?animal) (isa ?animal?typeofMeat))
+; 	(isa ?action2 EatingEvent)
+; 	(consumedObject ?action2 ?meat)
+; 	(isa ?meat ?typeofMeat)
+; 	(genls ?typeofMeat Meat))
+
+; (entails-SitTypeSitType (SubcollectionOfWithRelationToTypeFn EatingEvent consumedObject Meat)
+; 	(SubcollectionOfWithRelationToFn KillingByOrganism organismKilled Animal))
+
+;; 4. Opposition
+;; ----------------------------------
+
+;; Negation is strange... What's the correct semantic representation of "Jill is not eating"? There exists a Jill s.t. there does not exist an event that is an EatingEvent that Jill is performing? I could say that about everything...
+
+;; It's really only properties with a qualitative scale that can do this.
+;; So, one is always in some (and at most 1) posture. Therefore, if you are in a sitting posture, then you are not in a standing posture.
+;; But for states (e.g., postures) we use a non-Davidsonian representation. How is this represented differently from events?
+
+;; Can't be in two disjoint postures at once
+;; *** Or is it (postureOfAnimal ?whoever (not ?other-posture)) ???
+(<== (holdsIn ?sit (not (postureOfAnimal ?whoever ?other-posture)))
+	(holdsIn ?sit (postureOfAnimal ?whoever ?posture))
+	(disjointWith ?posture ?other-posture)
+	(isa ?other-posture AnimalTypeByPosture) ;sanity type check
+	)
+
+;; Iff shouting, then not being reasonably quiet
+;; Iff long hair, then not medium to short hair

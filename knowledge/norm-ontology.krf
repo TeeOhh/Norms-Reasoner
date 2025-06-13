@@ -1,0 +1,353 @@
+(in-microtheory NormativeMt)
+(comment NormativeMt "contains the ontology and rules for working with normative theories. Including ideas of social approval and prevalence (statistics of experience) as well as moral status of behaviors along with the necessary reasoning processes.")
+(genlMt NormativeMt MC-BackgroundKnowledgeMt)
+;(genlMt NormativeMt WorldLikeOursCollectorMt)
+
+
+;; -------------------------------------------------------
+;; 					Norm Types
+;; -------------------------------------------------------
+(isa Norm Collection)
+(comment Norm "A norm is an evaluation and/or regularity of an action that is (at times) contextually dependent. For the former, linguistically, these take the form of imperatives - 'Do not hit your brother'. For the latter, these are expressed in descriptive language - 'People sometimes hit their brothers'. Formally, a norm here is defined as: E(A)|C and P(A)|C, where E is the normative evaluation, P is the prevalence, A is the action/behavior being evaluated, and C is the conditional context. From the example, E = impermissible, A = hit, C = (and (objectActedOn hit brother) (brotherOf you brother)). These types of norms are not to be confused with legal rules (formal norms). Thus, these are non-formal norms, which have two types in this ontology: social (split into injunctive and descriptive) and moral norms. The theory here holds that moral norms are distinct from social ones only in their grounded justification. The working distinction is this: If a norm is supported merely by testimony or observation, then it is social. If an agent has done the reasoning to ground a norm in core values and first-principles, then it is a moral norm. In a reasoning system, social norms ought to be defeasible to relavent moral norms. Furthermore, moral norms aim for a 'perfect world' i.e. a world in which everything that is Obligatory has a certain level of prevalence and everything that is Impermissible has a certain low-degree of prevalence.")
+
+(isa MoralNorm Collection)
+(comment MoralNorm "A moral norm is a subtype of Norm (an evaluation and/or regularity of an action that is (at times) contextually dependent). If an agent has done the reasoning to ground a norm in core values and first-principles, then it is a moral norm. In a reasoning system, moral norms should take precedence over their social counterparts.")
+;(genls MoralNorm Norm)
+
+(isa SocialNorm Collection)
+(comment SocialNorm "A social norm is a subtype of Norm (an evaluation and/or regularity of an action that is (at times) contextually dependent). If a norm is supported merely by testimony or observation, then it is a social norm. In a reasoning system, moral norms should take precedence over their social counterparts.")
+(genls SocialNorm Norm)
+
+(isa DescriptiveNorm Collection)
+(comment DescriptiveNorm "Those norms that do not necessarily have normative evaluations but are behavioral regularities. I.e. the way the world IS.")
+(genls DescriptiveNorm Norm)
+
+(isa InjunctiveNorm Collection)
+(comment InjunctiveNorm "Those norms that have normative evaluations. I.e. the way the world OUGHT to be.")
+(genls InjunctiveNorm Norm)
+
+(disjointWith DescriptiveNorm InjunctiveNorm)
+
+(genls MoralNorm InjunctiveNorm)
+
+(isa ProhibitiveNorm Collection)
+(comment ProhibitiveNorm "X is impermissible.")
+(genls ProhibitiveNorm InjunctiveNorm)
+
+(isa DiscretionaryNorm Collection)
+(comment DiscretionaryNorm "X is optional i.e., neither obligatory nor impermissible.")
+(genls DiscretionaryNorm InjunctiveNorm)
+
+(isa ObligatoryNorm Collection)
+(comment ObligatoryNorm "X is obligatory.")
+(genls ObligatoryNorm InjunctiveNorm)
+
+(isa PermissiveNorm Collection)
+(comment PermissiveNorm "Those norms that have positive normative evaluations.")
+(genls PermissiveNorm InjunctiveNorm)
+
+(disjointWith ProhibitiveNorm PermissiveNorm)
+
+(<== (isa ?norm ProhibitiveNorm)
+  (isa ?norm Norm)
+  (evaluation ?norm Impermissible))
+
+(<== (isa ?norm DiscretionaryNorm)
+  (isa ?norm Norm)
+  (evaluation ?norm Optional))
+
+(<== (isa ?norm ObligatoryNorm)
+  (isa ?norm Norm)
+  (evaluation ?norm Obligatory))
+
+(<== (isa ?norm PermissiveNorm)
+  (isa ?norm ObligatoryNorm))
+
+(<== (isa ?norm PermissiveNorm)
+  (isa ?norm DiscretionaryNorm))
+
+;; -------------------------------------------------------
+;; Evaluation i.e. Deontic Operators
+;; -------------------------------------------------------
+
+;; Modal operators from Standard Deontic Logic = {Obligatory, Optional, Impermissible}
+(isa DeonticOperator Collection)
+(comment DeonticOperator "Modal operators from Standard Deontic Logic = {Obligatory, Optional, Impermissible}.")
+
+(isa DeonticOperator-2ndOrder Collection)
+(comment DeonticOperator-2ndOrder "Second-order modal operators from Standard Deontic Logic = {Permissible, Omissible} where Permissible = {Obligatory, Optional} and Omissible = {Optional, Impermissible}.")
+
+;; "All propositions are divided into three jointly exhaustive and mutually exclusive classes: every proposition is obligatory, optional, or impermissible, but no proposition falls into more than one of these three categories..." - https://plato.stanford.edu/entries/logic-deontic/
+
+(isa Obligatory DeonticOperator)
+(comment Obligatory "Obligatory is a modal operator that represents the attitude that something ought to be realized.")
+
+(isa Optional DeonticOperator)
+(comment Optional "Optional is a modal operator that represents the attitude that a state of affairs is neither Obligatory or impermissible. The evaluation is quite neutral.")
+
+(isa Impermissible DeonticOperator)
+(comment Impermissible "Impermissible is a modal operator that represents the attitude that a state of affairs is NOT to be realized. I.e. One should not do something.")
+
+;; These two are equivalent to disjunctions with two from above
+(isa Permissible DeonticOperator-2ndOrder)
+(comment Permissible "Permissible is a second-order operator that encompasses all the norms that are both Obligatory and/or Optional. I.e. those things that can be done.")
+
+(isa Omissible DeonticOperator-2ndOrder)
+(comment Omissible "Omissible is a second-order operator that encompasses all the norms that are both Optional and/or Impermissible. I.e. those things that can be left out.")
+
+(isa deonticContrary SymmetricBinaryPredicate)
+(comment deonticContrary "")
+(isa deonticContradictory SymmetricBinaryPredicate)
+(comment deonticContradictory "")
+(isa deonticSubsumes BinaryPredicate)
+(comment deonticSubsumes "(deonticSubsumes ?sub-deontic ?super-deontic) states that the first argument is completely subsumed by the second. That is the deontic concept ?sub-deontic is directly weaker than and thus deontically entails ?super-deontic. E.g., (deonticSubsumes Obligatory Permissible) b/c the concept of being obligatory is contained within the concept of being permissible.")
+
+(deonticContrary Impermissible Obligatory)
+(deonticContrary Impermissible Optional)
+(deonticContrary Obligatory Optional)
+(deonticContradictory Impermissible Permissible)
+(deonticContradictory Obligatory Omissible)
+(deonticSubcontrary Permissible Omissible)
+(deonticSubsumes Impermissible Omissible)
+(deonticSubsumes Obligatory Permissible)
+(deonticSubsumes Optional Omissible)
+(deonticSubsumes Optional Permissible)
+
+(<== (deonticContraryOrContradictory ?e1 ?e2)
+  (deonticContrary ?e1 ?e2))
+
+(<== (deonticContraryOrContradictory ?e1 ?e2)
+  (deonticContradictory ?e1 ?e2))
+
+;; ------------------------------------------
+;; Prevelance
+;; ------------------------------------------
+
+;; All frequencies defined in "Frequency" collection:
+
+;; Continuously i.e. Always
+;; Often
+;; RegularFrequency
+;; Sometimes-GenericFrequency
+;; RandomFrequency
+;; Rarely
+;; AlmostNever
+;; Never
+
+;; But need to have a smaller set of ~5. So map some to others:
+(isa NormFrequency Collection)
+(comment NormFrequency "The set of generic frequency concepts for social agent's behaviors. e.g. Humans often eat in the kitchen.")
+
+(isa Continuously NormFrequency)
+(isa Often NormFrequency)
+;; RegularlyFrequency -> Often
+(isa Sometimes-GenericFrequency NormFrequency)
+(isa Sometimes-GenericFrequency NormFrequency-2ndOrder)
+;; RandomFrequency -> Sometimes-GenericFrequency
+(isa Rarely NormFrequency)
+;; AlmostNever -> Rarely
+(isa Never NormFrequency)
+
+(isa succeedingPrevalenceValue BinaryPredicate)
+(comment succeedingPrevalenceValue "(succeedingPrevalenceValue prev-1 prev-2) states that prev-2 is the successor of prev-1 i.e., it comes immediately after on the 5-value prevalence scale used for norms.")
+(arity succeedingPrevalenceValue 2)
+(arg1Isa succeedingPrevalenceValue NormFrequency)
+(arg1Isa succeedingPrevalenceValue NormFrequency)
+
+(succeedingPrevalenceValue Never Rarely)
+(succeedingPrevalenceValue Rarely Sometimes-GenericFrequency)
+(succeedingPrevalenceValue Sometimes-GenericFrequency Often)
+(succeedingPrevalenceValue Often Continuously)
+(succeedingPrevalenceValue Sometimes-GenericFrequency MoreThanSometimes)
+(succeedingPrevalenceValue LessThanSometimes Sometimes-GenericFrequency)
+
+
+(isa lessThan BinaryPredicate)
+(comment lessThan "(lessThan freq-1 freq-2) represents an ordinal relationship between two frequencies. For example, (succeedingPrevalenceValue Often Continuously) is true.")
+(arity lessThan 2)
+(arg1Isa lessThan NormFrequency)
+(arg2Isa lessThan NormFrequency)
+
+;; base case
+(<== (lessThan ?less-val ?greater-val)
+  (succeedingPrevalenceValue ?less-val ?greater-val))
+;; e.g., (lessThan Sometimes MoreThanSometimes) b/c (frequencySubsumes Often MoreThanSometimes) and (lessthan Sometimes Often)
+;; Recusive definition of element being less than lowest point in interval: if it is less than every element in the interval and not in the interval itself.
+(<== (lessThan ?less-less-val ?greater-val)
+  (frequencySubsumes ?less-val ?greater-val)
+  (lessthan ?less-less-val ?less-val)
+;; This would also falsely succeed on (lessThan Often MoreThanSometimes) b/c (lessThan Often Continuously) & (frequencySubsumes Continously MoreThanSometimes)
+;; So need to do a proper ["less than" - subsets] like below.
+  (not (frequencySubsumes ?less-less-val ?greater-val)))
+;; transitivity
+(<== (lessThan ?less-val ?greater-val)
+  (lessThan ?less-val ?some-greater-val)
+  (lessThan ?some-greater-val ?greater-val))
+
+(isa NormFrequency-2ndOrder Collection)
+(genls NormFrequency-2ndOrder NormFrequency)
+(comment NormFrequency-2ndOrder "")
+(isa MoreThanSometimes NormFrequency-2ndOrder)
+(comment MoreThanSometimes "MoreThanSometimes is a second-order frequency that encompasses the frequencies: {Continuously, Often}.")
+(isa LessThanSometimes NormFrequency-2ndOrder)
+(comment LessThanSometimes "LessThanSometimes is a second-order frequency that encompasses the frequencies:  {Rarely, Never}.")
+
+(isa frequencySubsumes BinaryPredicate)
+(comment frequencySubsumes "(frequencySubsumes freq-sub freq-super) represents a subsumption relationship between two frequencies. For example, (frequencySubsumes Often MoreThanSometimes) is true because MoreThanSometimes subsumes often.")
+(arity frequencySubsumes 2)
+(arg1Isa frequencySubsumes NormFrequency)
+(arg2Isa frequencySubsumes NormFrequency)
+(frequencySubsumes Often MoreThanSometimes)
+(frequencySubsumes Continuously MoreThanSometimes)
+(frequencySubsumes Rarely LessThanSometimes)
+(frequencySubsumes Never LessThanSometimes)
+
+;; Optimal World Relations
+;; Obligatory : Continuously
+;; Impermissible : Never
+; (contradictoryFrequencyOfEvaluation Obligatory LessThanSometimes) ;;LessThanSometimes
+; (contradictoryFrequencyOfEvaluation Impermissible MoreThanSometimes) ;;MoreThanSometimes
+
+;; ------------------------------------------
+;; Fuzzy Definition of a "Norm Frame"
+;; ------------------------------------------
+
+;; 1. Context (C)
+;; ------------------------------
+;; 1.a Individual under constraints: the entity being held under the normative constraints, including attributes & descriptors. Sometimes an arbitrary social agent e.g. (GapFN :SUBJECT). Sometimes gender specific e.g. (isa (GapFN :SUBJECT) Male). Sometimes age specific e.g. (isa (GapFN :SUBJECT) Child). Sometimes type specific (player vs referee) e.g. (isa (GapFN :SUBJECT) Referee).
+
+;; 1.b Contextual preconditions: statements about individuals relationships with the world and other agents and states of the world i.e. everything but the behavior and its role-relations. E.g. (and (inLocation (GapFN :SUBJECT) library123) (isa library123 LibrarySpace) (isEmpty library123)). Within the preconditions there exists a distinct concept of a "trigger". For example, burping is a trigger for the injunctive norm of saying "excuse me". This seems to differ from other concepts within preconditions like "in the library". Note, defeasible conditions can be represented here with uninferredsentence.
+
+;; 2. Behavior (B)
+;; ------------------------------
+;; 2.a Behavior being constrained: for informal norms these are not limited to actions but also other mental phenomena such as emotions, desires, etc. E.g. (isa eat123 EatingEvent), (hasEmotion agent123 Sadness)
+
+;; 2.b Behavior's frame slots: The attributes and descriptors surrounding the behavior. E.g. (and (deviceUsed eat123 fork123), (isa fork123 Fork), (isClean fork123))
+
+;; 3. Normative evaluation/demand/approval (D)
+;; ------------------------------
+;; Conditional, upon #1 and #2, normative status of #3 and #4. E.g. {Bel(Obligatory) = .8, Bel(Optional) = .1, Bel(Prohibited) = .1}
+
+;; 4. Prevalance (P)
+;; ------------------------------
+;; Conditional, upon #1 and #2, frequency of #3 and #4. E.g. {Bel(Always) = .8, Bel(Sometimes) = .1, Bel(Never)= 0.0}
+
+
+;; Davidsonian
+;; -----------------
+;; Example:
+;; (isa norm123 PermissiveNorm)
+;; (evaluation norm123 Obligatory)
+;; (prevalence norm123 Common)
+;; (context norm123 (and (objectFoundInLocation agent123 funeral123) (isa funeral123 Funeral)))
+;; (behavior norm123 (and (performedBy agent123 wear123) (isa wear123 WearingObject) (objectWorn wear123 clothes123) (isa clothes123 Clothes) (colorOfObject clothes123 Black)))
+
+(isa evaluation Relation)
+(comment evaluation "Relates a reified norm frame with it's deontic modal e.g. (evaluation ?norm ?eval)")
+(arity evaluation 2)
+(arg1Isa evaluation Norm)
+(arg2Isa evaluation CycLExpression)
+
+(isa prevalence Relation)
+(comment prevalence "Relates a reified norm frame with it's frequency/prevalence e.g. (prevalence ?norm ?prevalence)")
+(arity prevalence 2)
+(arg1Isa prevalence Norm)
+(arg2Isa prevalence CycLExpression)
+
+(isa context Relation)
+(comment context "Relates a reified norm frame with it's contextual preconditions e.g. (context ?norm ?context)")
+(arity context 2)
+(arg1Isa context Norm)
+(arg2Isa context CycLExpression)
+
+;; empty conjunction is taken as True
+(<== (and))
+
+(isa equivalentNormFrames Predicate)
+(arity equivalentNormFrames 2)
+(arg1Isa equivalentNormFrames Norm)
+(arg2Isa equivalentNormFrames Norm)
+(<== (equivalentNormFrames ?norm1 ?norm2)
+  (isa ?norm1 Norm)
+  (context ?norm1 ?c1)
+  (behavior ?norm1 ?b1)
+  (isa ?norm2 Norm)
+  (different ?norm2 ?norm1)
+  (context ?norm2 ?c1)
+  (behavior ?norm2 ?b1))
+
+; (isa agentConstrained Relation)
+; (comment agentConstrained "The agent under the given norm e.g. (agentConstrained ?norm ?agent)")
+; (arity agentConstrained 2)
+; (arg1Isa agentConstrained Norm)
+; (arg2Isa agentConstrained CycLExpression)
+
+(isa normSubsumes Relation)
+(arity normSubsumes 2)
+(arg1Isa normSubsumes Norm)
+(arg2Isa normSubsumes Norm)
+
+(<== (normSubsumes ?n1 ?n2)
+  (behavior ?n1 ?b1)
+  (context ?n1 ?c1)
+  (behavior ?n2 ?b2)
+  (context ?n2 ?c2)
+  (entails-ConjConj (and ?c1 ?b1) (and ?c2 ?b2)))
+
+(isa behavior Relation)
+(comment behavior "Relates a reified norm frame with it's content i.e. the behavior e.g. (behavior ?norm ?behavior)")
+(arity behavior 2)
+(arg1Isa behavior Norm)
+(arg2Isa behavior CycLExpression)
+
+;; Norm frame accessors
+;; Needed for when the statement is a variable in plans/rules
+;; Example: we have ?norm bound to the evaluation statement and we want to get the evaluation. So... (NormFrame-evaluation ?norm ?eval)
+(isa NormFrame-ID Relation)
+(arity NormFrame-ID 2)
+(arg1Isa NormFrame-ID CycLExpression)
+(arg2Isa NormFrame-ID CycLExpression)
+(isa NormFrame-evaluation Relation)
+(arity NormFrame-evaluation 2)
+(arg1Isa NormFrame-evaluation CycLExpression)
+(arg2Isa NormFrame-evaluation CycLExpression)
+(isa NormFrame-prevalence Relation)
+(arity NormFrame-prevalence 2)
+(arg1Isa NormFrame-prevalence CycLExpression)
+(arg2Isa NormFrame-prevalence CycLExpression)
+(isa NormFrame-behavior Relation)
+(arity NormFrame-behavior 2)
+(arg1Isa NormFrame-behavior CycLExpression)
+(arg2Isa NormFrame-behavior CycLExpression)
+(isa NormFrame-context Relation)
+(arity NormFrame-context 2)
+(arg1Isa NormFrame-context CycLExpression)
+(arg2Isa NormFrame-context CycLExpression)
+
+(<== (NormFrame-ID (evaluation ?norm ?eval) ?prop)
+  (groundExpression ?norm)
+  (groundExpression ?eval)
+  (unifies ?prop ?norm))
+
+(<== (NormFrame-evaluation (evaluation ?norm ?eval) ?prop)
+	(groundExpression ?norm)
+  (groundExpression ?eval)
+  (unifies ?prop ?eval)) 
+
+(<== (NormFrame-prevalence (prevalence ?norm ?prev) ?prop)
+	(groundExpression ?norm)
+  (groundExpression ?prev)
+  (unifies ?prop ?prev))
+
+(<== (NormFrame-behavior (behavior ?norm ?b) ?prop)
+	(groundExpression ?norm)
+  (groundExpression ?b)
+  (unifies ?prop ?b))
+
+(<== (NormFrame-context (context ?norm ?c) ?prop)
+	(groundExpression ?norm)
+  (groundExpression ?c)
+  (unifies ?prop ?c))
+
+
+;; --------------------------------------------

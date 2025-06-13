@@ -1,0 +1,52 @@
+(in-microtheory PositiveMoralNormsMt)
+(genlMt MoralNormsMt PositiveMoralNormsMt)
+;; These could be further classified under Kant's theory of perfect/imperfect duties to self and others. This would be much more descriptive.
+
+;; More from: https://plato.stanford.edu/entries/kant-moral/
+;; Perfect duties come in the form “One must never (or always) φ to the fullest extent possible in C”, while imperfect duties, since they require us to adopt an end, at least require that “One must sometimes and to some extent φ in C.” - Hill (1971)
+;; So, for instance, Kant held that the maxim of committing suicide to avoid future unhappiness did not pass the third step, the contradiction in conception test. Hence, one is forbidden to act on the maxim of committing suicide to avoid unhappiness. By contrast, the maxim of refusing to assist others in pursuit of their projects passes the contradiction in conception test, but fails the contradiction in the will test at the fourth step. Hence, we have a duty to sometimes and to some extent aid and assist others.
+
+;; Of course, if part of an agent's mental model, each of these action types are really in conjunction with PurposefulAction.
+
+;; Positive Moral Norms
+;; -------------------------------------------
+(isa m1-pos MoralNorm)
+(context m1-pos (and ))
+;; May have to make this imperfect duty more perfect by giving it more context
+(behavior m1-pos (and (frequencyOfActionTypeForAgent HelpingAnAgent ?agent activeActors Sometimes-GenericFrequency)))
+(evaluation m1-pos Obligatory)
+
+;; Negative Moral Norms
+;; -------------------------------------------
+(in-microtheory NegativeMoralNormsMt)
+(genlMt MoralNormsMt NegativeMoralNormsMt)
+
+(isa m1 MoralNorm)
+(context m1 (and ))
+(behavior m1 (and (activeActors ?action ?agent) (isa ?action EncroachingOnFreedomOfAgent)))
+(evaluation m1 Impermissible)
+
+(isa m2 MoralNorm)
+(context m2 (and ))
+(behavior m2 (and (activeActors ?action ?agent) (isa ?action UnfairAction)))
+(evaluation m2 Impermissible)
+
+(isa m3 MoralNorm)
+(context m3 (and ))
+(behavior m3 (and (activeActors ?action ?agent) (isa ?action Lying)))
+(evaluation m3 Impermissible)
+
+(isa m4 MoralNorm)
+(context m4 (and ))
+(behavior m4 (and (activeActors ?action ?agent) (isa ?action PreventingAgentAccessToNecessaryResources)))
+(evaluation m4 Impermissible)
+
+(isa m5 MoralNorm)
+(context m5 (and ))
+(behavior m5 (and (activeActors ?action ?agent) (isa ?action BreakingAnAgreement)))
+(evaluation m5 Impermissible)
+
+(isa m6 MoralNorm)
+(context m6 (and ))
+(behavior m6 (and (activeActors ?action ?agent) (isa ?action HarmingAnAgent)))
+(evaluation m6 Impermissible)
